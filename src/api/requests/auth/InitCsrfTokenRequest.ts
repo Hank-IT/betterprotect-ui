@@ -1,4 +1,4 @@
-import { BaseRequest, type ResponseContract, JsonResponse } from '@hank-it/ui/service/requests'
+import { BaseRequest, JsonResponse } from '@hank-it/ui/service/requests'
 
 export class InitCsrfTokenRequest extends BaseRequest {
   method(): string {
@@ -9,7 +9,7 @@ export class InitCsrfTokenRequest extends BaseRequest {
     return '/sanctum/csrf-cookie'
   }
 
-  accepts(): ResponseContract {
-    return JsonResponse
+  public getResponse() {
+    return new JsonResponse
   }
 }

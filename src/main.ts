@@ -4,10 +4,10 @@ import 'flowbite'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
-import router from './router'
+import router from './router/router'
 import {useAuthStore} from '@/stores/auth.ts'
-import {FetchDriver, BaseRequest, VueLoaderDriverFactory} from '@hank-it/ui/service/requests'
-import {VuePaginationDriverFactory} from '@hank-it/ui/service/pagination'
+import {FetchDriver, BaseRequest, VueLoaderDriverFactory, ErrorHandler} from '@hank-it/ui/service/requests'
+import {Paginator, VuePaginationDriverFactory} from '@hank-it/ui/service/pagination'
 import {UnauthorizedException, PageExpiredException} from '@hank-it/ui/service/requests/exceptions'
 import { FetchAuthUserRequest } from '@/api/requests/auth/FetchAuthUserRequest'
 import { InitCsrfTokenRequest } from '@/api/requests/auth/InitCsrfTokenRequest'
@@ -22,7 +22,7 @@ const app = createApp(App)
 
 app.use(createPinia())
 
-const auth = useAuthStore()
+const auth= useAuthStore()
 
 router.beforeEach(async (to, from) => {
     if (!auth.authenticated && to.name !== 'login') {
@@ -35,12 +35,23 @@ router.beforeEach(async (to, from) => {
     }
 })
 
+ErrorHandler.registerHandler(error => {
+    if (error.statusCode === 401) {
+        console.debug("Caught UnauthorizedException")
+        console.debug("Redirecting to login page")
+
+        auth.authenticated = false
+
+        router.push({ name: 'login' })
+    }
+})
+
 const initLoad = async () => {
     try {
         const res = await fetch('/config.json')
         const file = (await res.json()) as Record<string, unknown>
 
-        window.SERVER = file.servers[0]
+        BaseRequest.setDefaultBaseUrl(file.servers[0])
 
         window.console.debug('Loaded config.json')
     } catch (e) {
@@ -60,8 +71,8 @@ const initLoad = async () => {
         // We have to catch the error and redirect to the login page
         // ourselves here instead of relying on the global error
         // handler, since otherwise the app does not boot.
-        window.console.error(e)
-        router.push({ name: 'login' })
+        //window.console.error(e)
+        //router.push({ name: 'login' })
     }
 }
 

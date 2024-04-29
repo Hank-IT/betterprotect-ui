@@ -1,4 +1,4 @@
-import { BaseRequest, type ResponseContract, JsonResponse } from '@hank-it/ui/service/requests'
+import { BaseRequest, JsonResponse } from '@hank-it/ui/service/requests'
 
 export class UserLoginRequest extends BaseRequest {
   method(): string {
@@ -6,10 +6,10 @@ export class UserLoginRequest extends BaseRequest {
   }
 
   url(): string {
-    return '/api/v1/login'
+    return '/auth/login'
   }
 
-  accepts(): ResponseContract {
-    return JsonResponse
+  public getResponse() {
+    return new JsonResponse
   }
 }
