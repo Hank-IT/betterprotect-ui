@@ -1,0 +1,19 @@
+services:
+  vite:
+    image: node:19-alpine
+    working_dir: /home/node/app
+    entrypoint: npm run dev
+    networks:
+      - traefik
+    volumes:
+      - "./:/home/node/app"
+    labels:
+      - "traefik.http.routers.crm-frontend-vite.rule=Host(``)"
+      - "traefik.http.routers.crm-frontend-vite.tls=true"
+      - "traefik.http.routers.crm-frontend-vite.tls.certresolver=lets-encrypt"
+      - "traefik.http.services.crm-frontend-vite.loadbalancer.server.port=8080"
+      - "traefik.http.services.crm-frontend-vite.loadbalancer.server.scheme=http"
+
+networks:
+  traefik:
+    external: true
