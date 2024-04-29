@@ -8,11 +8,11 @@ services:
     volumes:
       - "./:/home/node/app"
     labels:
-      - "traefik.http.routers.crm-frontend-vite.rule=Host(``)"
-      - "traefik.http.routers.crm-frontend-vite.tls=true"
-      - "traefik.http.routers.crm-frontend-vite.tls.certresolver=lets-encrypt"
-      - "traefik.http.services.crm-frontend-vite.loadbalancer.server.port=8080"
-      - "traefik.http.services.crm-frontend-vite.loadbalancer.server.scheme=http"
+      - "traefik.http.routers.betterprotect-ui-vite.rule=Host(`${APP_DOMAIN}`)"
+      - "traefik.http.routers.betterprotect-ui-vite.tls=true"
+      - "traefik.http.routers.betterprotect-ui-vite.tls.certresolver=lets-encrypt"
+      - "traefik.http.services.betterprotect-ui-vite.loadbalancer.server.port=8080"
+      - "traefik.http.services.betterprotect-ui-vite.loadbalancer.server.scheme=http"
 
 networks:
   traefik:

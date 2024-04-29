@@ -14,7 +14,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@hank-it/ui": "file:../hankit-ui",
+    "@hank-it/ui": "^1.0.0",
     "@heroicons/vue": "^2.1.3",
     "flowbite": "^2.3.0",
     "luxon": "^3.4.4",
