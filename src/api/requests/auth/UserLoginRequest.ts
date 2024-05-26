@@ -6,7 +6,7 @@ export class UserLoginRequest extends BaseRequest {
   }
 
   url(): string {
-    return '/auth/login'
+    return '/api/v1/login'
   }
 
   public getResponse() {

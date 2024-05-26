@@ -1,12 +1,13 @@
 services:
   vite:
-    image: node:19-alpine
+    image: node:20-alpine
     working_dir: /home/node/app
     entrypoint: npm run dev
     networks:
       - traefik
     volumes:
       - "./:/home/node/app"
+      - "../hankit-ui:/home/node/hankit-ui"
     labels:
       - "traefik.http.routers.betterprotect-ui-vite.rule=Host(`${APP_DOMAIN}`)"
       - "traefik.http.routers.betterprotect-ui-vite.tls=true"

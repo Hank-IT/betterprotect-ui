@@ -6,7 +6,7 @@ export class FetchAuthUserRequest extends BaseRequest {
   }
 
   url(): string {
-    return '/auth/user'
+    return '/api/v1/auth-user'
   }
 
   public getResponse() {

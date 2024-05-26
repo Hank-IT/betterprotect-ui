@@ -6,26 +6,28 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
-    const env = loadEnv(mode, process.cwd(), '')
+  const env = loadEnv(mode, process.cwd(), '')
 
-    return {
-        plugins: [
-            vue(),
-            vueJsx(),
-        ],
-            resolve: {
-        alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
-        }
+    console.log(env.APP_DOMAIN)
+
+  return {
+    plugins: [
+      vue(),
+      vueJsx()
+    ],
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url))
+      }
     },
-        server: {
-            host: true,
-                port: 8080,
-                hmr: {
-                protocol: 'wss',
-                    clientPort: 443,
-                    host: env.APP_DOMAIN
-            }
-        },
+    server: {
+      host: true,
+      port: 8080,
+      hmr: {
+        protocol: 'wss',
+        clientPort: 443,
+        host: env.APP_DOMAIN
+      }
     }
+  }
 })

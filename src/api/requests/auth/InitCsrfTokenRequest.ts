@@ -1,4 +1,4 @@
-import { BaseRequest, JsonResponse } from '@hank-it/ui/service/requests'
+import { BaseRequest, PlainTextResponse } from '@hank-it/ui/service/requests'
 
 export class InitCsrfTokenRequest extends BaseRequest {
   method(): string {
@@ -10,6 +10,6 @@ export class InitCsrfTokenRequest extends BaseRequest {
   }
 
   public getResponse() {
-    return new JsonResponse
+    return new PlainTextResponse
   }
 }
