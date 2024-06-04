@@ -43,8 +43,8 @@
 import { FetchAuthUserRequest } from '@/api/requests/auth/FetchAuthUserRequest'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
-import { UserLoginRequest } from '@/api/requests/auth/UserLoginRequest'
-import { JsonContent } from '@hank-it/ui/service/requests'
+import { AuthJsonContent, UserLoginRequest } from '@/api/requests/auth/UserLoginRequest'
+import { RequestBaseException } from '@hank-it/ui/service/requests/exceptions'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
@@ -56,7 +56,7 @@ const formErrors = ref({})
 
 function submit() {
   new UserLoginRequest()
-    .setBody(new JsonContent({
+    .setBody(new AuthJsonContent({
       username: username.value,
       password: password.value
     }))
@@ -69,7 +69,7 @@ function submit() {
 
       router.push({ name: 'dashboard' })
     })
-    .catch(error => {
+    .catch((error: RequestBaseException) => {
       error.getError().getBodyPromise().then(bodyContent => {
         formErrors.value = bodyContent.errors
       })
