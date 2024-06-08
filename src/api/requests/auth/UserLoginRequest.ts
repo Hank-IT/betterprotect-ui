@@ -1,4 +1,4 @@
-import { BaseRequest, JsonResponse } from '@hank-it/ui/service/requests'
+import { BaseRequest, JsonResponse, JsonContent } from '@hank-it/ui/service/requests'
 
 export interface AuthPayload {
   username: string,
@@ -6,7 +6,9 @@ export interface AuthPayload {
 }
 
 export class AuthJsonContent extends JsonContent {
-  public constructor(protected data: AuthPayload) {}
+  public constructor(data: AuthPayload){
+    super(data)
+  }
 }
 
 export class UserLoginRequest extends BaseRequest {

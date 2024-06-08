@@ -1,6 +1,6 @@
-import { BaseRequest, JsonResponse, JsonContent } from '@hank-it/ui/service/requests'
+import { BaseRequest, PlainTextResponse, JsonContent } from '@hank-it/ui/service/requests'
 
-export interface ServerCreatePayload {
+export interface ServerUpdatePayload {
   hostname: string,
   postfix_db_host: string,
   postfix_db_name: string,
@@ -20,22 +20,26 @@ export interface ServerCreatePayload {
   log_db_port: string,
 }
 
-export class ServerCreateContent extends JsonContent {
-  public constructor(data: ServerCreatePayload) {
+export class ServerUpdateContent extends JsonContent {
+  public constructor(data: ServerUpdatePayload) {
     super(data)
   }
 }
 
-export class ServerCreateRequest extends BaseRequest {
+export class ServerUpdateRequest extends BaseRequest {
+  constructor(protected id) {
+    super()
+  }
+
   method(): string {
-    return 'POST'
+    return 'PUT'
   }
 
   url(): string {
-    return '/api/v1/servers'
+    return `/api/v1/servers/${this.id}`
   }
 
   public getResponse() {
-    return new JsonResponse
+    return new PlainTextResponse
   }
 }

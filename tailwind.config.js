@@ -3,7 +3,7 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx,vue}",
-    "./node_modules/flowbite/**/*.js"
+    //"./node_modules/flowbite/**/*.js"
   ],
   theme: {
     extend: {
@@ -20,12 +20,25 @@ export default {
       animation: {
         indeterminate: 'indeterminate 2s infinite linear'
       },
+      colors: {
+        'primary': {
+          '50': '#edfaff',
+          '100': '#d6f2ff',
+          '200': '#b5eaff',
+          '300': '#83dfff',
+          '400': '#48cbff',
+          '500': '#1eadff',
+          '600': '#068fff',
+          '700': '#007bff',
+          '800': '#085ec5',
+          '900': '#0d519b',
+          '950': '#0e315d',
+        },
+      },
     },
   },
   plugins: [
-    require('flowbite/plugin')({
-      charts: true,
-    }),
+    require('@tailwindcss/forms'),
   ],
 }
 
