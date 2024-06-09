@@ -127,7 +127,7 @@
                             </div>
                             <input
                                 v-model="form.postfix_db_password"
-                                :disabled="keepLogDbPassword"
+                                :disabled="keepPostfixDbPassword"
                                 type="password"
                                 name="postfix_db_password"
                                 id="postfix_db_password"

@@ -1,6 +1,8 @@
 import Pusher from 'pusher-js'
 import Echo from 'laravel-echo'
 
+console.log("Initializing laravel-echo")
+
 window.Pusher = Pusher
 
 function getCookie(cname) {
@@ -22,8 +24,8 @@ function getCookie(cname) {
 const echo = new Echo({
     broadcaster: 'pusher',
     key: getCookie('websocket-app-key'),
-    wsHost: window.location.hostname,
-    wssHost: window.location.hostname,
+    wsHost: window.API_HOST + '/ws',
+    wssHost: window.API_HOST + '/ws',
     forceTLS: false,
     encrypted: true,
     disableStats: true,
@@ -31,6 +33,7 @@ const echo = new Echo({
     wssPort: 443,
     authEndpoint: '/api/broadcasting/auth',
     enabledTransports: ['ws', 'wss'],
+    cluster: 'eu',
     auth: {
         headers: {
             'X-XSRF-TOKEN': getCookie('XSRF-TOKEN'),

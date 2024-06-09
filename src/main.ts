@@ -7,7 +7,6 @@ import router from './router/router'
 import {useAuthStore} from '@/stores/auth.ts'
 import {FetchDriver, BaseRequest, VueLoaderDriverFactory, ErrorHandler} from '@hank-it/ui/service/requests'
 import {Paginator, VuePaginationDriverFactory} from '@hank-it/ui/service/pagination'
-import {UnauthorizedException, PageExpiredException} from '@hank-it/ui/service/requests/exceptions'
 import { FetchAuthUserRequest } from '@/api/requests/auth/FetchAuthUserRequest'
 import { InitCsrfTokenRequest } from '@/api/requests/auth/InitCsrfTokenRequest'
 
@@ -50,7 +49,9 @@ const initLoad = async () => {
         const res = await fetch('/config.json')
         const file = (await res.json()) as Record<string, unknown>
 
-        BaseRequest.setDefaultBaseUrl(file.servers[0])
+        BaseRequest.setDefaultBaseUrl('https://' + file.servers[0])
+
+        window.API_HOST = file.servers[0]
 
         window.console.debug('Loaded config.json')
     } catch (e) {
