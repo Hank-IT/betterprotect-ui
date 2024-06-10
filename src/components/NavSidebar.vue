@@ -67,7 +67,7 @@
     </TransitionRoot>
 
     <!-- Static sidebar for desktop -->
-    <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+    <div class="hidden lg:fixed lg:inset-y-0 lg:z-30 lg:flex lg:w-72 lg:flex-col">
         <!-- Sidebar component, swap this element with another sidebar if you like -->
         <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
             <div class="flex h-16 shrink-0 items-center">
@@ -128,9 +128,17 @@
                                 </RouterLink>
                             </li>
                             <li>
-                                <a href="#" :class="[false ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
-                                    <span class="truncate">Recipients</span>
-                                </a>
+                                <RouterLink
+                                    v-slot="{ href, navigate, isActive }"
+                                    :to="{ name: 'policy.recipients.index' }"
+                                    custom
+                                >
+                                    <a
+                                        :href="href"
+                                        :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
+                                        @click="navigate"
+                                    >Recipients</a>
+                                </RouterLink>
                             </li>
                             <li>
                                 <a href="#" :class="[false ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">

@@ -6,6 +6,7 @@ import ParentRouterView from '@/components/ParentRouterView.vue'
 import ServerCreatePage from '@/pages/ServerPage/pages/ServerCreatePage/ServerCreatePage.vue'
 import ServerUpdatePage from '@/pages/ServerPage/pages/ServerUpdatePage/ServerUpdatePage.vue'
 import RulesPage from '@/pages/RulesPage/RulesPage.vue'
+import RecipientsPage from '@/pages/RecipientsPage/RecipientsPage.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,7 +47,12 @@ const router = createRouter({
             path: '/policy/rules',
             component: RulesPage,
             name: 'policy.rules.index',
-        }
+        },
+        {
+            path: '/policy/recipients',
+            component: RecipientsPage,
+            name: 'policy.recipients.index',
+        },
     ]
 })
 

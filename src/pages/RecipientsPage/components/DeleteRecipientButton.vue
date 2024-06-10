@@ -7,13 +7,13 @@
         Delete
     </button>
 
-    <ConfirmationDialog v-model="isOpen" @action="deleteRule">
+    <ConfirmationDialog v-model="isOpen" @action="deleteRecipient">
         <template #title>
-            Delete rule
+            Delete recipient
         </template>
 
         <template #description>
-            Are you sure you want to delete this rule?. This action cannot be undone.
+            Are you sure you want to delete this recipient?. This action cannot be undone.
         </template>
 
         <template #action>
@@ -24,9 +24,9 @@
 
 <script setup lang="ts">
 import ProgressLoader from '@/ui/ProgressLoader.vue'
-import {RuleDeleteRequest} from '@/api/requests/rules/RuleDeleteRequest'
 import ConfirmationDialog from '@/ui/ConfirmationDialog.vue'
 import {useIsOpen} from '@hank-it/ui/vue'
+import {RecipientDeleteContent, RecipientDeleteRequest} from '@/api/requests/recipients/RecipientDeleteRequest'
 
 const props = defineProps({
     id: {
@@ -37,12 +37,14 @@ const props = defineProps({
 
 const emits = defineEmits(['success'])
 
-const request = new RuleDeleteRequest(props.id)
+const request = new RecipientDeleteRequest()
 
 const {isOpen} = useIsOpen()
 
-function deleteRule() {
-    request.send().then(() => {
+function deleteRecipient() {
+    request.setBody(new RecipientDeleteContent({
+        ids: [props.id]
+    })).send().then(() => {
         emits('success')
     }).catch(exception => {
         //

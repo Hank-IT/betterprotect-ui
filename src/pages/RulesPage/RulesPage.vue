@@ -3,12 +3,23 @@
         <ProgressLoader/>
     </div>
 
-    <div v-if="Object.keys(rules).length > 0">
+    <div>
         <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
                 <h1 class="text-base font-semibold leading-6 text-gray-900">Rules</h1>
-                <p class="mt-2 text-sm text-gray-700">Rules are processed in the displayed order. First match determines
-                    the response.</p>
+                <p class="mt-2 text-sm text-gray-700">Rules are processed in the displayed order. First match determines the response.</p>
+            </div>
+        </div>
+
+        <div class="sm:flex sm:items-center mt-6">
+            <div class="sm:flex-auto">
+                <input
+                    v-model="search"
+                    name="search"
+                    type="text"
+                    placeholder="Search"
+                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
+                />
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                 <button @click="createRuleSlideoverOpen = true"
@@ -18,7 +29,8 @@
                 </button>
             </div>
         </div>
-        <div class="mt-8 flow-root">
+
+        <div v-if="Object.keys(rules).length > 0" class="mt-8 flow-root">
             <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                     <div class="relative">
@@ -26,7 +38,7 @@
                             <thead>
                             <tr>
                                 <th scope="col"
-                                    class="min-w-[12rem] py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 relative px-7 sm:w-12 sm:px-6">
+                                    class="min-w-[12rem] py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 relative px-3 sm:w-12">
                                     Client
                                 </th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -39,7 +51,7 @@
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
                             <tr v-for="rule in rules" :key="rule.id">
-                                <td class="whitespace-nowrap py-4 pr-3 text-sm font-medium relative px-7 sm:w-12 sm:px-6">
+                                <td class="whitespace-nowrap py-4 pr-3 text-sm font-medium relative px-3 sm:w-12">
                                     <div v-if="! rule.active" class="absolute inset-y-0 left-0 w-0.5 bg-yellow-400"></div>
                                     <span v-if="rule.client_type === '*'" class="text-red-500 uppercase">
                                         Any
@@ -74,13 +86,25 @@
                 </div>
             </div>
         </div>
+
+        <div v-if="Object.keys(rules).length === 0 && initialLoading" class="text-center mt-8">
+            <h3 class="mt-2 text-sm font-semibold text-gray-900">No rules</h3>
+            <p class="mt-1 text-sm text-gray-500">
+                <template v-if="search === ''">
+                    Get started by creating a rule.
+                </template>
+                <template v-else>
+                    No matches found for {{ search }}
+                </template>
+            </p>
+        </div>
     </div>
 
     <CreateRuleSlideover v-model="createRuleSlideoverOpen" @success="loadRules" :key="createRuleSlideoverKey" />
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import {ref, computed} from 'vue'
 import {RuleIndexRequest} from '@/api/requests/rules/RuleIndexRequest.ts'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
 import CreateRuleSlideover from '@/pages/RulesPage/components/CreateRuleSlideover.vue'
@@ -90,15 +114,34 @@ import DownButton from '@/components/DownButton.vue'
 import DisableButton from '@/components/DisableButton.vue'
 import EnableButton from '@/components/EnableButton.vue'
 import DeleteRuleButton from '@/pages/RulesPage/components/DeleteRuleButton.vue'
-
-const ruleIndexRequest = new RuleIndexRequest()
+import {debounce} from 'lodash'
 
 const rules = ref({})
 
+const internalSearch = ref('')
+
+const search = computed({
+    set(value) {
+        internalSearch.value = value
+
+        loadRuleDebounced()
+    },
+    get() {
+        return internalSearch.value
+    }
+})
+
 const {isOpen: createRuleSlideoverOpen, isOpenKey: createRuleSlideoverKey} = useIsOpen()
 
+const ruleIndexRequest = new RuleIndexRequest()
+
+const initialLoading = ref(false)
+
 function loadRules() {
-    ruleIndexRequest
+    return ruleIndexRequest
+        .setParams({
+            search: search.value
+        })
         .send()
         .then(response => {
             rules.value = response.getData()
@@ -108,5 +151,11 @@ function loadRules() {
         })
 }
 
-loadRules()
+const loadRuleDebounced = debounce(loadRules, 250, {
+    leading: true,
+})
+
+loadRules().then(() => {
+    initialLoading.value = true
+})
 </script>
