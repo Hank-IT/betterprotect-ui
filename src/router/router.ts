@@ -7,6 +7,8 @@ import ServerCreatePage from '@/pages/ServerPage/pages/ServerCreatePage/ServerCr
 import ServerUpdatePage from '@/pages/ServerPage/pages/ServerUpdatePage/ServerUpdatePage.vue'
 import RulesPage from '@/pages/RulesPage/RulesPage.vue'
 import RecipientsPage from '@/pages/RecipientsPage/RecipientsPage.vue'
+import TransportPage from '@/pages/TransportPage/TransportPage.vue'
+import RelayDomainPage from '@/pages/RelayDomains/RelayDomainPage.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,6 +54,16 @@ const router = createRouter({
             path: '/policy/recipients',
             component: RecipientsPage,
             name: 'policy.recipients.index',
+        },
+        {
+            path: '/policy/transports',
+            component: TransportPage,
+            name: 'policy.transports.index',
+        },
+        {
+            path: '/policy/relay-domains',
+            component: RelayDomainPage,
+            name: 'policy.relay-domains.index',
         },
     ]
 })

@@ -78,7 +78,7 @@
                             </p>
                         </div>
 
-                        <BInput  v-if="! anySender" v-model="form" :errors="formErrors" id="sender_payload" name="sender_payload" class="sm:col-span-6">
+                        <BInput v-if="! anySender" v-model="form" :errors="formErrors" id="sender_payload" name="sender_payload" class="sm:col-span-6">
                             <template #label>
                                 Sender
                             </template>

@@ -1,13 +1,13 @@
 <template>
-    <div v-if="recipientIndexRequest.isLoading()" class="absolute w-full top-16 left-0">
+    <div v-if="transportIndexRequest.isLoading()" class="absolute w-full top-16 left-0">
         <ProgressLoader/>
     </div>
 
     <div>
         <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
-                <h1 class="text-base font-semibold leading-6 text-gray-900">Recipients</h1>
-                <p class="mt-2 text-sm text-gray-700">Define recipients which Postfix will accept mails for.</p>
+                <h1 class="text-base font-semibold leading-6 text-gray-900">Transports</h1>
+                <p class="mt-2 text-sm text-gray-700">Transports define how Postfix relays mail traffic.</p>
             </div>
         </div>
 
@@ -21,17 +21,11 @@
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
                 />
             </div>
-            <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none space-x-4">
-                <button @click="createRecipientSlideoverOpen = true"
+            <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+                <button @click="createTransportSlideoverOpen = true"
                         type="button"
                         class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                    Create recipient
-                </button>
-
-                <button @click="createRecipientSlideoverOpen = true"
-                        type="button"
-                        class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                    LDAP Import
+                    Create transport
                 </button>
             </div>
         </div>
@@ -45,7 +39,19 @@
                             <tr>
                                 <th scope="col"
                                     class="min-w-[12rem] py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 relative px-3 sm:w-12">
-                                    Recipient
+                                    Domain
+                                </th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                    Transport
+                                </th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                    Nexthop
+                                </th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                    Nexthop Port
+                                </th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                    Nexthop MX
                                 </th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                     Source
@@ -53,19 +59,31 @@
                             </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
-                            <tr v-for="recipient in paginator.getPageData()" :key="recipient.id">
+                            <tr v-for="transport in paginator.getPageData()" :key="transport.id">
                                 <td class="whitespace-nowrap py-4 pr-3 text-sm font-medium relative px-3 sm:w-12">
-                                    <div v-if="! recipient.active" class="absolute inset-y-0 left-0 w-0.5 bg-yellow-400"></div>
+                                    <div v-if="! transport.active" class="absolute inset-y-0 left-0 w-0.5 bg-yellow-400"></div>
 
-                                    <span class="text-gray-700">{{ recipient.payload }}</span>
+                                    <span class="text-gray-700">{{ transport.domain }}</span>
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm">
-                                    <span class="text-gray-700">{{ recipient.data_source }}</span>
+                                    <span class="text-gray-700">{{ transport.transport }}</span>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                    <span class="text-gray-700">{{ transport.nexthop }}</span>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                    <span class="text-gray-700">{{ transport.nexthop_port }}</span>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                    <span class="text-gray-700">{{ transport.nexthop_mx }}</span>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                    <span class="text-gray-700">{{ transport.data_source }}</span>
                                 </td>
                                 <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3 space-x-2">
-                                    <DisableButton v-if="recipient.active" entity="relay-recipient" :id="recipient.id" @success="loadRecipients" />
-                                    <EnableButton v-if="! recipient.active" entity="relay-recipient" :id="recipient.id" @success="loadRecipients" />
-                                    <DeleteRecipientButton :id="recipient.id" @success="loadRecipients" />
+                                    <DisableButton v-if="transport.active" entity="transport" :id="transport.id" @success="loadTransports" />
+                                    <EnableButton v-if="! transport.active" entity="transport" :id="transport.id" @success="loadTransports" />
+                                    <DeleteTransportButton :id="transport.id" @success="loadTransports" />
                                 </td>
                             </tr>
                             </tbody>
@@ -84,10 +102,10 @@
         </div>
 
         <div v-if="Object.keys(paginator.getPageData()).length === 0 && initialLoading" class="text-center mt-8">
-            <h3 class="mt-2 text-sm font-semibold text-gray-900">No recipients</h3>
+            <h3 class="mt-2 text-sm font-semibold text-gray-900">No transports</h3>
             <p class="mt-1 text-sm text-gray-500">
                 <template v-if="search === ''">
-                    Get started by creating a recipient.
+                    Get started by creating a transport.
                 </template>
                 <template v-else>
                     No matches found for {{ search }}
@@ -96,7 +114,7 @@
         </div>
     </div>
 
-    <CreateRecipientSlideover v-model="createRecipientSlideoverOpen" @success="loadRecipients" :key="createRecipientSlideoverKey" />
+    <CreateTransportSlideover v-model="createTransportSlideoverOpen" @success="loadTransports" :key="createTransportSlideoverKey" />
 </template>
 
 <script setup lang="ts">
@@ -107,24 +125,24 @@ import {Paginator, RequestDriver} from '@hank-it/ui/service/pagination'
 import DisableButton from '@/components/DisableButton.vue'
 import EnableButton from '@/components/EnableButton.vue'
 import {debounce} from 'lodash'
-import {RecipientIndexRequest} from '@/api/requests/recipients/RecipientIndexRequest.ts'
-import CreateRecipientSlideover from '@/pages/RecipientsPage/components/CreateRecipientSlideover.vue'
-import DeleteRecipientButton from '@/pages/RecipientsPage/components/DeleteRecipientButton.vue'
 import BPagination from '@/ui/BPagination.vue'
+import {TransportIndexRequest} from '@/api/requests/transports/TransportIndexRequest'
+import CreateTransportSlideover from '@/pages/TransportPage/components/CreateTransportSlideover.vue'
+import DeleteTransportButton from '@/pages/TransportPage/components/DeleteTransportButton.vue'
 
 const internalSearch = ref('')
 
-const recipientIndexRequest = new RecipientIndexRequest()
+const transportIndexRequest = new TransportIndexRequest
 
 const search = computed({
     set(value) {
         internalSearch.value = value
 
-        recipientIndexRequest.withParams({
+        transportIndexRequest.withParams({
             search: value
         })
 
-        loadRecipientsDebounced(1)
+        loadTransportsDebounced(1)
     },
     get() {
         return internalSearch.value
@@ -140,22 +158,22 @@ const pageNumber = computed({
     }
 })
 
-const {isOpen: createRecipientSlideoverOpen, isOpenKey: createRecipientSlideoverKey} = useIsOpen()
+const {isOpen: createTransportSlideoverOpen, isOpenKey: createTransportSlideoverKey} = useIsOpen()
 
 const initialLoading = ref(false)
 
-const paginator = new Paginator(new RequestDriver(recipientIndexRequest))
+const paginator = new Paginator(new RequestDriver(transportIndexRequest))
 
 // Make the paginator prepare the first page
 paginator.init(1, 10).then(() => {
     initialLoading.value = true
 })
 
-function loadRecipients(page: Number = undefined) {
+function loadTransports(page: Number = undefined) {
     page ? paginator.refresh(page): paginator.refresh()
 }
 
-const loadRecipientsDebounced = debounce(() => {
-    loadRecipients(1)
+const loadTransportsDebounced = debounce(() => {
+    loadTransports(1)
 }, 250)
 </script>
