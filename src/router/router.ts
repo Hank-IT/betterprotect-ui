@@ -9,6 +9,7 @@ import RulesPage from '@/pages/RulesPage/RulesPage.vue'
 import RecipientsPage from '@/pages/RecipientsPage/RecipientsPage.vue'
 import TransportPage from '@/pages/TransportPage/TransportPage.vue'
 import RelayDomainPage from '@/pages/RelayDomains/RelayDomainPage.vue'
+import MilterDefinitionsPage from '@/pages/MilterDefinitionsPage/MilterDefinitionsPage.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -64,6 +65,11 @@ const router = createRouter({
             path: '/policy/relay-domains',
             component: RelayDomainPage,
             name: 'policy.relay-domains.index',
+        },
+        {
+            path: '/policy/milter',
+            component: MilterDefinitionsPage,
+            name: 'policy.milter.index',
         },
     ]
 })
