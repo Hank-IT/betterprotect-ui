@@ -34,7 +34,6 @@ import {useRouter} from 'vue-router'
 import {ref} from 'vue'
 import ServerItem from '@/pages/ServerPage/components/ServerItem.vue'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
-import {useEcho} from '@/domain/eventBus/composables/useEcho'
 
 const router = useRouter()
 
@@ -53,6 +52,4 @@ function loadServers() {
 }
 
 loadServers()
-
-const echo = useEcho()
 </script>

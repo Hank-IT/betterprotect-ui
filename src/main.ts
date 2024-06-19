@@ -1,5 +1,4 @@
 import './assets/main.css'
-
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
@@ -9,6 +8,8 @@ import {FetchDriver, BaseRequest, VueLoaderDriverFactory, ErrorHandler} from '@h
 import {Paginator, VuePaginationDriverFactory} from '@hank-it/ui/service/pagination'
 import { FetchAuthUserRequest } from '@/api/requests/auth/FetchAuthUserRequest'
 import { InitCsrfTokenRequest } from '@/api/requests/auth/InitCsrfTokenRequest'
+import EchoFactory from '@/domain/eventBus/EchoFactory'
+import Pusher from 'pusher-js'
 
 BaseRequest.setRequestDriver(new FetchDriver({
     corsWithCredentials: true
@@ -44,14 +45,25 @@ ErrorHandler.registerHandler(error => {
     }
 })
 
+function initWebsockets(url: string, websocketAppKey: string) {
+    // Setup websockets
+    window.Pusher = Pusher
+    window.echo = new EchoFactory(url, websocketAppKey).make()
+
+    window.echo.private('task')
+      .listen('TaskCreated', (e) => {
+          console.log(e);
+      });
+}
+
 const initLoad = async () => {
+    let file
+
     try {
         const res = await fetch('/config.json')
-        const file = (await res.json()) as Record<string, unknown>
+        file = (await res.json()) as Record<string, unknown>
 
         BaseRequest.setDefaultBaseUrl('https://' + file.servers[0])
-
-        window.API_HOST = file.servers[0]
 
         window.console.debug('Loaded config.json')
     } catch (e) {
@@ -67,7 +79,12 @@ const initLoad = async () => {
         await new FetchAuthUserRequest().send()
 
         auth.authenticated = true
+
+        initWebsockets(file.servers[0], file.websockets.key)
+
     } catch(e) {
+        console.error(e)
+
         // We have to catch the error and redirect to the login page
         // ourselves here instead of relying on the global error
         // handler, since otherwise the app does not boot.

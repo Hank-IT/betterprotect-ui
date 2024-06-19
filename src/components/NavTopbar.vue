@@ -13,8 +13,8 @@
                     <button type="button" class="rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Install Policy</button>
                 </form>
                 <div class="flex items-center gap-x-4 lg:gap-x-6">
-                    <button type="button" class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
-                        <span class="sr-only">View notifications</span>
+                    <button @click="taskStore.isSlideoverOpen = true" type="button" class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+                        <span class="sr-only">View tasks</span>
                         <BellIcon class="h-6 w-6" aria-hidden="true" />
                     </button>
 
@@ -40,6 +40,8 @@
                     </Menu>
                 </div>
             </div>
+
+          <TaskSlideover v-model="taskStore.isSlideoverOpen" />
         </div>
 
     <!--
@@ -100,23 +102,23 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useTaskStore } from '@/stores/task'
+
 import {
     Menu,
     MenuButton,
     MenuItem,
     MenuItems,
 } from '@headlessui/vue'
+
 import {
     Bars3Icon,
     BellIcon,
 } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon } from '@heroicons/vue/20/solid'
-const userNavigation = [
-
-
-    { name: 'Your profile', href: '#' },
-    { name: 'Sign out', href: '#' },
-]
+import TaskSlideover from '@/components/TaskSlideover/TaskSlideover.vue'
 
 const sidebarOpen = ref(false)
+
+const taskStore = useTaskStore()
 </script>

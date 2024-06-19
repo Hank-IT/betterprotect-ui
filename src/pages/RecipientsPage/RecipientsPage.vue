@@ -28,7 +28,7 @@
                     Create recipient
                 </button>
 
-                <button @click="createRecipientSlideoverOpen = true"
+                <button @click="recipientLdapQuerySlideoverOpen = true"
                         type="button"
                         class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                     LDAP Import
@@ -97,6 +97,7 @@
     </div>
 
     <CreateRecipientSlideover v-model="createRecipientSlideoverOpen" @success="loadRecipients" :key="createRecipientSlideoverKey" />
+    <RecipientLdapQuerySlideover v-model="recipientLdapQuerySlideoverOpen" :key="recipientLdapQuerySlideoverKey" />
 </template>
 
 <script setup lang="ts">
@@ -111,6 +112,7 @@ import {RecipientIndexRequest} from '@/api/requests/recipients/RecipientIndexReq
 import CreateRecipientSlideover from '@/pages/RecipientsPage/components/CreateRecipientSlideover.vue'
 import DeleteRecipientButton from '@/pages/RecipientsPage/components/DeleteRecipientButton.vue'
 import BPagination from '@/ui/BPagination.vue'
+import RecipientLdapQuerySlideover from '@/pages/RecipientsPage/components/RecipientLdapQuerySlideover.vue'
 
 const internalSearch = ref('')
 
@@ -141,6 +143,7 @@ const pageNumber = computed({
 })
 
 const {isOpen: createRecipientSlideoverOpen, isOpenKey: createRecipientSlideoverKey} = useIsOpen()
+const {isOpen: recipientLdapQuerySlideoverOpen, isOpenKey: recipientLdapQuerySlideoverKey} = useIsOpen()
 
 const initialLoading = ref(false)
 
@@ -158,4 +161,6 @@ function loadRecipients(page: Number = undefined) {
 const loadRecipientsDebounced = debounce(() => {
     loadRecipients(1)
 }, 250)
+
+// ToDo: Load recipients on websocket broadcast
 </script>
