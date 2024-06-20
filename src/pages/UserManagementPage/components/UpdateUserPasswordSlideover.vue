@@ -1,34 +1,30 @@
+
 <template>
     <BSlideover v-model="isOpen">
         <template #title>
-            Create milter definition
+            Update user password
         </template>
 
         <template #default>
-            <form @submit.prevent="submit" id="create-milter-definition-form" class="flex flex-1 flex-col justify-between" :action="request.url()" :method="request.method()">
+            <form @submit.prevent="submit" id="update-user-password-form" class="flex flex-1 flex-col justify-between" :action="request.url()" :method="request.method()">
                 <div class="relative divide-y divide-gray-200 px-4 sm:px-6">
                     <div v-if="request.isLoading()" class="absolute w-full top-0 right-0">
                         <ProgressLoader/>
                     </div>
 
                     <div class="space-y-4 pb-5 pt-6">
-                        <BInput v-model="form" :errors="formErrors" id="name" name="name">
+                        <BInput v-model="form" type="password" :errors="formErrors" id="password" name="password">
                             <template #label>
-                                Name
+                                Password
                             </template>
                         </BInput>
 
-                        <BInput v-model="form" :errors="formErrors" id="definition" name="definition">
+                        <BInput v-model="form" type="password" :errors="formErrors" id="password_confirmation" name="password_confirmation">
                             <template #label>
-                                Definition
+                                Password confirmation
                             </template>
                         </BInput>
 
-                        <BTextarea v-model="form" :errors="formErrors" id="description" name="description" :rows="2">
-                            <template #label>
-                                Description
-                            </template>
-                        </BTextarea>
                     </div>
                 </div>
             </form>
@@ -37,7 +33,7 @@
         <template #footer>
             <div class="flex flex-shrink-0 justify-end px-4 py-4">
                 <button type="button" class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" @click="isOpen = false">Cancel</button>
-                <button form="create-milter-definition-form" type="submit" class="ml-4 inline-flex justify-center rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Save</button>
+                <button form="update-user-password-form" type="submit" class="ml-4 inline-flex justify-center rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Save</button>
             </div>
         </template>
     </BSlideover>
@@ -47,19 +43,17 @@
 import BSlideover from '@/ui/BSlideover.vue'
 import {useModelWrapper} from '@hank-it/ui/vue'
 import { ref} from 'vue'
-import BInput from '@/ui/BInput.vue'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
-import { MilterCreateContent, MilterCreateRequest } from '@/api/requests/milters/MilterCreateRequest'
-import BTextarea from '@/ui/BTextarea.vue'
+import BInput from '@/ui/BInput.vue'
+import { UserPasswordUpdateRequest, UserRolePasswordPayload } from '@/api/requests/user/UserPasswordUpdateRequest'
 
 const props = defineProps({
     modelValue: Boolean,
+    id: Number,
 })
 
 const form = ref({
-    name: '',
-    definition: '',
-    description: '',
+    role: '',
 })
 
 const emits = defineEmits(['update:modelValue', 'success'])
@@ -68,11 +62,11 @@ const isOpen = useModelWrapper(props, emits)
 
 const formErrors = ref({})
 
-const request = new MilterCreateRequest()
+const request = new UserPasswordUpdateRequest
 
 function submit() {
-    request
-        .setBody(new MilterCreateContent(form.value))
+    request.setId(props.id)
+        .setBody(new UserRolePasswordPayload(form.value))
         .send()
         .then(response => {
             emits('success')

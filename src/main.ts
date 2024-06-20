@@ -10,6 +10,10 @@ import { FetchAuthUserRequest } from '@/api/requests/auth/FetchAuthUserRequest'
 import { InitCsrfTokenRequest } from '@/api/requests/auth/InitCsrfTokenRequest'
 import EchoFactory from '@/domain/eventBus/EchoFactory'
 import Pusher from 'pusher-js'
+import { useConfigStore } from '@/stores/config'
+import initWebsockets from '@/domain/eventBus/composables/useInitWebsockets'
+
+window.Pusher = Pusher
 
 BaseRequest.setRequestDriver(new FetchDriver({
     corsWithCredentials: true
@@ -22,6 +26,7 @@ const app = createApp(App)
 app.use(createPinia())
 
 const auth= useAuthStore()
+const config = useConfigStore()
 
 router.beforeEach(async (to, from) => {
     if (!auth.authenticated && to.name !== 'login') {
@@ -30,7 +35,7 @@ router.beforeEach(async (to, from) => {
     }
 
     if (auth.authenticated && to.name === 'login') {
-        return { name: 'dashboard' }
+        return { name: 'servers.index' }
     }
 })
 
@@ -39,22 +44,11 @@ ErrorHandler.registerHandler(error => {
         console.debug("Caught UnauthorizedException")
         console.debug("Redirecting to login page")
 
-        auth.authenticated = false
+        auth.user = undefined
 
         router.push({ name: 'login' })
     }
 })
-
-function initWebsockets(url: string, websocketAppKey: string) {
-    // Setup websockets
-    window.Pusher = Pusher
-    window.echo = new EchoFactory(url, websocketAppKey).make()
-
-    window.echo.private('task')
-      .listen('TaskCreated', (e) => {
-          console.log(e);
-      });
-}
 
 const initLoad = async () => {
     let file
@@ -63,7 +57,10 @@ const initLoad = async () => {
         const res = await fetch('/config.json')
         file = (await res.json()) as Record<string, unknown>
 
-        BaseRequest.setDefaultBaseUrl('https://' + file.servers[0])
+        config.server = file.servers[0]
+        config.websocketKey = file.websockets.key
+
+        BaseRequest.setDefaultBaseUrl('https://' + config.server)
 
         window.console.debug('Loaded config.json')
     } catch (e) {
@@ -76,12 +73,11 @@ const initLoad = async () => {
     await new InitCsrfTokenRequest().send()
 
     try {
-        await new FetchAuthUserRequest().send()
+        const result = await new FetchAuthUserRequest().send()
 
-        auth.authenticated = true
+        auth.user = await result.getData()
 
-        initWebsockets(file.servers[0], file.websockets.key)
-
+        initWebsockets(config.server, config.websocketKey)
     } catch(e) {
         console.error(e)
 

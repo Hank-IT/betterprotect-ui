@@ -39,7 +39,7 @@
                             </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
-                            <tr v-for="milter in milters" :key="recipient.id">
+                            <tr v-for="milter in milters" :key="milter.id">
                                 <td class="whitespace-nowrap py-4 pr-3 text-sm font-medium relative px-3 sm:w-12">
                                     <span class="text-gray-700">{{ milter.name }}</span>
                                 </td>

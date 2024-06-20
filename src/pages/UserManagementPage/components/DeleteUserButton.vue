@@ -7,13 +7,13 @@
         Delete
     </button>
 
-    <ConfirmationDialog v-model="isOpen" @action="deleteTransport">
+    <ConfirmationDialog v-model="isOpen" @action="deleteRecipient">
         <template #title>
-            Delete relay domain
+            Delete user
         </template>
 
         <template #description>
-            Are you sure you want to delete this relay domain? This action cannot be undone.
+            Are you sure you want to delete this user?. This action cannot be undone.
         </template>
 
         <template #action>
@@ -26,7 +26,7 @@
 import ProgressLoader from '@/ui/ProgressLoader.vue'
 import ConfirmationDialog from '@/ui/ConfirmationDialog.vue'
 import {useIsOpen} from '@hank-it/ui/vue'
-import {RelayDomainDeleteRequest} from '@/api/requests/relayDomains/RelayDomainDeleteRequest'
+import { UserDeleteRequest } from '@/api/requests/user/UserDeleteRequest'
 
 const props = defineProps({
     id: {
@@ -37,11 +37,11 @@ const props = defineProps({
 
 const emits = defineEmits(['success'])
 
-const request = new RelayDomainDeleteRequest(props.id)
+const request = new UserDeleteRequest(props.id)
 
 const {isOpen} = useIsOpen()
 
-function deleteTransport() {
+function deleteRecipient() {
     request.send().then(() => {
         emits('success')
     }).catch(exception => {

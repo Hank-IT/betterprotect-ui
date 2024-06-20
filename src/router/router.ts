@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginPage from '@/pages/LoginPage/LoginPage.vue'
-import DashboardPage from '@/pages/DashboardPage/DashboardPage.vue'
 import ServerPage from '@/pages/ServerPage/ServerPage.vue'
 import ParentRouterView from '@/components/ParentRouterView.vue'
 import ServerCreatePage from '@/pages/ServerPage/pages/ServerCreatePage/ServerCreatePage.vue'
@@ -10,6 +9,8 @@ import RecipientsPage from '@/pages/RecipientsPage/RecipientsPage.vue'
 import TransportPage from '@/pages/TransportPage/TransportPage.vue'
 import RelayDomainPage from '@/pages/RelayDomains/RelayDomainPage.vue'
 import MilterDefinitionsPage from '@/pages/MilterDefinitionsPage/MilterDefinitionsPage.vue'
+import MilterExceptionsPage from '@/pages/MilterExceptionsPage/MilterExceptionsPage.vue'
+import UserManagementPage from '@/pages/UserManagementPage/UserManagementPage.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,9 +21,9 @@ const router = createRouter({
             component: LoginPage
         },
         {
-            path: '/dashboard',
-            name: 'dashboard',
-            component: DashboardPage
+            path: '/users',
+            name: 'users',
+            component: UserManagementPage
         },
         {
             path: '/server',
@@ -71,6 +72,11 @@ const router = createRouter({
             component: MilterDefinitionsPage,
             name: 'policy.milter.index',
         },
+        {
+            path: '/policy/milter/exceptions',
+            component: MilterExceptionsPage,
+            name: 'policy.milter.exceptions'
+        }
     ]
 })
 

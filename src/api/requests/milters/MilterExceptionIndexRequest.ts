@@ -1,5 +1,5 @@
 import { BaseRequest, JsonResponse } from '@hank-it/ui/service/requests'
-import {MilterResource} from '@/api/requests/milters/MilterIndexRequest'
+import {type MilterResource} from '@/api/requests/milters/MilterIndexRequest'
 
 export interface MilterExceptionResource {
     id: Number,

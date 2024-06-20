@@ -1,14 +1,21 @@
 <template>
     <TransitionRoot as="template" :show="sidebarOpen">
         <Dialog class="relative z-50 lg:hidden" @close="sidebarOpen = false">
-            <TransitionChild as="template" enter="transition-opacity ease-linear duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="transition-opacity ease-linear duration-300" leave-from="opacity-100" leave-to="opacity-0">
+            <TransitionChild as="template" enter="transition-opacity ease-linear duration-300" enter-from="opacity-0"
+                             enter-to="opacity-100" leave="transition-opacity ease-linear duration-300"
+                             leave-from="opacity-100" leave-to="opacity-0">
                 <div class="fixed inset-0 bg-gray-900/80" />
             </TransitionChild>
 
             <div class="fixed inset-0 flex">
-                <TransitionChild as="template" enter="transition ease-in-out duration-300 transform" enter-from="-translate-x-full" enter-to="translate-x-0" leave="transition ease-in-out duration-300 transform" leave-from="translate-x-0" leave-to="-translate-x-full">
+                <TransitionChild as="template" enter="transition ease-in-out duration-300 transform"
+                                 enter-from="-translate-x-full" enter-to="translate-x-0"
+                                 leave="transition ease-in-out duration-300 transform" leave-from="translate-x-0"
+                                 leave-to="-translate-x-full">
                     <DialogPanel class="relative mr-16 flex w-full max-w-xs flex-1">
-                        <TransitionChild as="template" enter="ease-in-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in-out duration-300" leave-from="opacity-100" leave-to="opacity-0">
+                        <TransitionChild as="template" enter="ease-in-out duration-300" enter-from="opacity-0"
+                                         enter-to="opacity-100" leave="ease-in-out duration-300"
+                                         leave-from="opacity-100" leave-to="opacity-0">
                             <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
                                 <button type="button" class="-m-2.5 p-2.5" @click="sidebarOpen = false">
                                     <span class="sr-only">Close sidebar</span>
@@ -34,7 +41,8 @@
                                             </li>
                                             -->
                                             <li>
-                                                <a href="#" :class="[false ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
+                                                <a href="#"
+                                                   :class="[false ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
                                                     Server
                                                 </a>
                                             </li>
@@ -44,16 +52,21 @@
                                         <div class="text-xs font-semibold leading-6 text-gray-400">Your teams</div>
                                         <ul role="list" class="-mx-2 mt-2 space-y-1">
                                             <li v-for="team in teams" :key="team.name">
-                                                <a :href="team.href" :class="[team.current ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
-                                                    <span :class="[team.current ? 'border-indigo-600 text-indigo-600' : 'border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium']">{{ team.initial }}</span>
+                                                <a :href="team.href"
+                                                   :class="[team.current ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
+                                                    <span :class="[team.current ? 'border-indigo-600 text-indigo-600' : 'border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium']">{{ team.initial
+                                                        }}</span>
                                                     <span class="truncate">{{ team.name }}</span>
                                                 </a>
                                             </li>
                                         </ul>
                                     </li>
                                     <li class="mt-auto">
-                                        <a href="#" class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
-                                            <Cog6ToothIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
+                                        <a href="#"
+                                           class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
+                                            <Cog6ToothIcon
+                                                    class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600"
+                                                    aria-hidden="true" />
                                             Settings
                                         </a>
                                     </li>
@@ -80,24 +93,26 @@
                         <ul role="list" class="-mx-2 space-y-1">
                             <li>
                                 <RouterLink
-                                    v-slot="{ href, navigate, isActive }"
-                                    :to="{ name: 'server.index' }"
-                                    custom
+                                        v-slot="{ href, navigate, isActive }"
+                                        :to="{ name: 'server.index' }"
+                                        custom
                                 >
                                     <a
-                                        :href="href"
-                                        :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
-                                        @click="navigate"
+                                            :href="href"
+                                            :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
+                                            @click="navigate"
                                     >Server</a>
                                 </RouterLink>
                             </li>
                             <li>
-                                <a href="#" :class="[false ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
+                                <a href="#"
+                                   :class="[false ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
                                     Log Viewer
                                 </a>
                             </li>
                             <li>
-                                <a href="#" :class="[false ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
+                                <a href="#"
+                                   :class="[false ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
                                     Charts
                                 </a>
                             </li>
@@ -116,87 +131,101 @@
                             -->
                             <li>
                                 <RouterLink
-                                    v-slot="{ href, navigate, isActive }"
-                                    :to="{ name: 'policy.rules.index' }"
-                                    custom
+                                        v-slot="{ href, navigate, isActive }"
+                                        :to="{ name: 'policy.rules.index' }"
+                                        custom
                                 >
                                     <a
-                                        :href="href"
-                                        :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
-                                        @click="navigate"
+                                            :href="href"
+                                            :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
+                                            @click="navigate"
                                     >Rules</a>
                                 </RouterLink>
                             </li>
                             <li>
                                 <RouterLink
-                                    v-slot="{ href, navigate, isActive }"
-                                    :to="{ name: 'policy.recipients.index' }"
-                                    custom
+                                        v-slot="{ href, navigate, isActive }"
+                                        :to="{ name: 'policy.recipients.index' }"
+                                        custom
                                 >
                                     <a
-                                        :href="href"
-                                        :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
-                                        @click="navigate"
+                                            :href="href"
+                                            :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
+                                            @click="navigate"
                                     >Recipients</a>
                                 </RouterLink>
                             </li>
                             <li>
                                 <RouterLink
-                                    v-slot="{ href, navigate, isActive }"
-                                    :to="{ name: 'policy.transports.index' }"
-                                    custom
+                                        v-slot="{ href, navigate, isActive }"
+                                        :to="{ name: 'policy.transports.index' }"
+                                        custom
                                 >
                                     <a
-                                        :href="href"
-                                        :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
-                                        @click="navigate"
+                                            :href="href"
+                                            :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
+                                            @click="navigate"
                                     >Transports</a>
                                 </RouterLink>
                             </li>
                             <li>
                                 <RouterLink
-                                    v-slot="{ href, navigate, isActive }"
-                                    :to="{ name: 'policy.relay-domains.index' }"
-                                    custom
+                                        v-slot="{ href, navigate, isActive }"
+                                        :to="{ name: 'policy.relay-domains.index' }"
+                                        custom
                                 >
                                     <a
-                                        :href="href"
-                                        :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
-                                        @click="navigate"
+                                            :href="href"
+                                            :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
+                                            @click="navigate"
                                     >Relay domains</a>
                                 </RouterLink>
                             </li>
                             <li>
                                 <RouterLink
-                                    v-slot="{ href, navigate, isActive }"
-                                    :to="{ name: 'policy.milter.index' }"
-                                    custom
+                                        v-slot="{ href, navigate, isActive }"
+                                        :to="{ name: 'policy.milter.index' }"
+                                        custom
                                 >
                                     <a
-                                        :href="href"
-                                        :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
-                                        @click="navigate"
+                                            :href="href"
+                                            :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
+                                            @click="navigate"
                                     >Milter definitions</a>
                                 </RouterLink>
                             </li>
                             <li>
-                                <a href="#" :class="[false ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
-                                    <span class="truncate">Milter exceptions</span>
-                                </a>
+                                <RouterLink
+                                        v-slot="{ href, navigate, isActive }"
+                                        :to="{ name: 'policy.milter.exceptions' }"
+                                        custom
+                                >
+                                    <a
+                                            :href="href"
+                                            :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
+                                            @click="navigate"
+                                    >Milter exceptions</a>
+                                </RouterLink>
                             </li>
                         </ul>
                     </li>
                     <li class="mt-auto">
-                        <a href="#" class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
-                            <Cog6ToothIcon class="h-6 w-6 shrink-0 text-gray-400 group-hover:text-indigo-600" aria-hidden="true" />
-                            User management
-                        </a>
+                        <RouterLink
+                                v-slot="{ href, navigate, isActive }"
+                                :to="{ name: 'users' }"
+                                custom
+                        >
+                            <a
+                                    :href="href"
+                                    :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md text-sm font-semibold leading-6']"
+                                    @click="navigate"
+                            >User management</a>
+                        </RouterLink>
                     </li>
                 </ul>
             </nav>
         </div>
     </div>
-
 
     <!--
   <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0" aria-label="Sidebar">
@@ -248,7 +277,7 @@ import {
     MenuItem,
     MenuItems,
     TransitionChild,
-    TransitionRoot,
+    TransitionRoot
 } from '@headlessui/vue'
 import {
     Bars3Icon,
@@ -260,7 +289,7 @@ import {
     FolderIcon,
     HomeIcon,
     UsersIcon,
-    XMarkIcon,
+    XMarkIcon
 } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 
@@ -272,20 +301,20 @@ const navigation = [
     { name: 'Projects', href: '#', icon: FolderIcon, current: false },
     { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
     { name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
-    { name: 'Reports', href: '#', icon: ChartPieIcon, current: false },
+    { name: 'Reports', href: '#', icon: ChartPieIcon, current: false }
 ]
 const teams = [
 
 
     { id: 1, name: 'Heroicons', href: '#', initial: 'H', current: false },
     { id: 2, name: 'Tailwind Labs', href: '#', initial: 'T', current: false },
-    { id: 3, name: 'Workcation', href: '#', initial: 'W', current: false },
+    { id: 3, name: 'Workcation', href: '#', initial: 'W', current: false }
 ]
 const userNavigation = [
 
 
     { name: 'Your profile', href: '#' },
-    { name: 'Sign out', href: '#' },
+    { name: 'Sign out', href: '#' }
 ]
 
 const sidebarOpen = ref(false)

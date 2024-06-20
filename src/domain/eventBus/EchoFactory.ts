@@ -1,8 +1,7 @@
 import Echo from 'laravel-echo'
 
 export default class EchoFactory {
-  constructor(protected host: string, protected websocketAppKey: string) {
-  }
+  constructor(protected host: string, protected websocketAppKey: string) {}
 
   public make() {
     // Workaround to make pusher send credentials
