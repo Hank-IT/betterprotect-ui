@@ -47,6 +47,16 @@ import { useRouter } from 'vue-router'
 import InstallPolicySlideover from '@/components/InstallPolicySlideover.vue'
 import {useIsOpen} from '@hank-it/ui/vue'
 import { useAppStore } from '@/stores/app'
+import useListenForEventsOnBus from '@/domain/eventBus/composables/useListenForEventsOnBus'
+import EventBusSubscriber from '@/domain/eventBus/EventBusSubscriber'
+import TaskCreatedEvent from '@/domain/eventBus/events/TaskCreatedEvent'
+import TaskFailedEvent from '@/domain/eventBus/events/TaskFailedEvent'
+import TaskFinishedEvent from '@/domain/eventBus/events/TaskFinishedEvent'
+import TaskProgressEvent from '@/domain/eventBus/events/TaskProgressEvent'
+import TaskStartedEvent from '@/domain/eventBus/events/TaskStartedEvent'
+import type EventBusEventContract from '@/domain/eventBus/contracts/EventBusEventContract'
+import UserTaskEventBus from '@/domain/eventBus/channels/UserTaskEventBus'
+import ProgressLoader from '@/ui/ProgressLoader.vue'
 
 const taskStore = useTaskStore()
 
@@ -70,5 +80,21 @@ function logout() {
     })
 }
 
-useEventBus()
+useListenForEventsOnBus(
+        [
+            new EventBusSubscriber(
+                    [
+                        new TaskCreatedEvent,
+                        new TaskFailedEvent,
+                        new TaskFinishedEvent,
+                        new TaskProgressEvent,
+                        new TaskStartedEvent(),
+                    ],
+                    (event: EventBusEventContract, payload?: any) => {
+
+                    }
+            ),
+        ],
+        UserTaskEventBus.NAME,
+)
 </script>

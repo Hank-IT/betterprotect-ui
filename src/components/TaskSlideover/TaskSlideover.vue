@@ -72,8 +72,17 @@
 import BSlideover from '@/ui/BSlideover.vue'
 import {useModelWrapper, useOnOpen} from '@hank-it/ui/vue'
 import { ref } from 'vue'
-import { TaskIndexRequest } from '@/api/requests/tasks/TaskIndexRequest'
+import { TaskIndexRequest, TaskIndexResponse } from '@/api/requests/tasks/TaskIndexRequest'
 import useDateHandling from '@/composables/useDateHandling'
+import useListenForEventsOnBus from '@/domain/eventBus/composables/useListenForEventsOnBus'
+import UserTaskEventBus from '@/domain/eventBus/channels/UserTaskEventBus'
+import TaskCreatedEvent from '@/domain/eventBus/events/TaskCreatedEvent'
+import type EventBusEventContract from '@/domain/eventBus/contracts/EventBusEventContract'
+import EventBusSubscriber from '@/domain/eventBus/EventBusSubscriber'
+import TaskFailedEvent from '@/domain/eventBus/events/TaskFailedEvent'
+import TaskFinishedEvent from '@/domain/eventBus/events/TaskFinishedEvent'
+import TaskProgressEvent from '@/domain/eventBus/events/TaskProgressEvent'
+import TaskStartedEvent from '@/domain/eventBus/events/TaskStartedEvent'
 
 const props = defineProps({
     modelValue: Boolean,
@@ -99,30 +108,28 @@ function loadTasks() {
     })
 }
 
-const {onOpen} = useOnOpen(props, {
-  closeCallback: () => {
-    window.echo.private('task').stopListening()
-  }
-})
+const {onOpen} = useOnOpen(props)
 
 onOpen(() => {
-  loadTasks()
-
-  window.echo.private('task')
-    .listen('.task.created', (e) => {
-      loadTasks()
-    })
-    .listen('.task.started', (e) => {
-      loadTasks()
-    })
-    .listen('.task.progress', (e) => {
-      loadTasks()
-    })
-    .listen('.task.finished', (e) => {
-      loadTasks()
-    })
-    .listen('.task.failed', (e) => {
-      loadTasks()
-    })
+   loadTasks()
 })
+
+useListenForEventsOnBus(
+        [
+                new EventBusSubscriber(
+                        [
+                                new TaskCreatedEvent,
+                                new TaskFailedEvent,
+                                new TaskFinishedEvent,
+                                new TaskProgressEvent,
+                                new TaskStartedEvent(),
+                        ],
+                        (event: EventBusEventContract, payload?: any) => {
+                            console.log(payload)
+                            loadTasks()
+                        }
+                ),
+        ],
+        UserTaskEventBus.NAME,
+)
 </script>

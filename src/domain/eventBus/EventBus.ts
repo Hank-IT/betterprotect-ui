@@ -1,5 +1,5 @@
 import EventBusSubscriber from './EventBusSubscriber'
-import EventBusEventContract from './contracts/EventBusEventContract'
+import type EventBusEventContract from './contracts/EventBusEventContract'
 
 export default abstract class EventBus {
     protected subscribers: EventBusSubscriber[] = []

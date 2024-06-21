@@ -1,5 +1,4 @@
-import EventBusEventContract from './contracts/EventBusEventContract'
-import { uuidv4 } from '../..'
+import type EventBusEventContract from './contracts/EventBusEventContract'
 
 export default class EventBusSubscriber {
     protected id: string
@@ -10,7 +9,8 @@ export default class EventBusSubscriber {
         events: EventBusEventContract|EventBusEventContract[],
         callback: (event: EventBusEventContract, payload?: any) => void,
     ) {
-        this.id = uuidv4()
+        // ToDo
+        this.id = '5'
         this.callback = callback
 
         if (!Array.isArray(events)) {

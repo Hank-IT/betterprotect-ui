@@ -15,4 +15,8 @@
 <script setup lang="ts">
 import NavSidebar from '@/components/NavSidebar.vue'
 import NavTopbar from '@/components/NavTopbar.vue'
+import UserTaskEventBus from '@/domain/eventBus/channels/UserTaskEventBus'
+import useCreateEchoEventBus from '@/domain/eventBus/composables/useCreateEchoEventBus'
+
+useCreateEchoEventBus(new UserTaskEventBus())
 </script>
