@@ -9,8 +9,7 @@ export default class EventBusSubscriber {
         events: EventBusEventContract|EventBusEventContract[],
         callback: (event: EventBusEventContract, payload?: any) => void,
     ) {
-        // ToDo
-        this.id = '5'
+        this.id = Symbol()
         this.callback = callback
 
         if (!Array.isArray(events)) {

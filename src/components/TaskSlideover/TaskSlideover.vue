@@ -125,7 +125,6 @@ useListenForEventsOnBus(
                                 new TaskStartedEvent(),
                         ],
                         (event: EventBusEventContract, payload?: any) => {
-                            console.log(payload)
                             loadTasks()
                         }
                 ),

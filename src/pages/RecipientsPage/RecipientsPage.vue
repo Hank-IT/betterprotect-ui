@@ -117,6 +117,15 @@ import DeleteRecipientButton from '@/pages/RecipientsPage/components/DeleteRecip
 import BPagination from '@/ui/BPagination.vue'
 import RecipientLdapQuerySlideover from '@/pages/RecipientsPage/components/RecipientLdapQuerySlideover.vue'
 import { useAuthStore } from '@/stores/auth'
+import useListenForEventsOnBus from '@/domain/eventBus/composables/useListenForEventsOnBus'
+import EventBusSubscriber from '@/domain/eventBus/EventBusSubscriber'
+import TaskCreatedEvent from '@/domain/eventBus/events/TaskCreatedEvent'
+import TaskFailedEvent from '@/domain/eventBus/events/TaskFailedEvent'
+import TaskFinishedEvent from '@/domain/eventBus/events/TaskFinishedEvent'
+import TaskProgressEvent from '@/domain/eventBus/events/TaskProgressEvent'
+import TaskStartedEvent from '@/domain/eventBus/events/TaskStartedEvent'
+import type EventBusEventContract from '@/domain/eventBus/contracts/EventBusEventContract'
+import UserTaskEventBus from '@/domain/eventBus/channels/UserTaskEventBus'
 
 const internalSearch = ref('')
 
@@ -173,5 +182,19 @@ onMounted(() => {
     searchRef.value.focus()
 })
 
-// ToDo: Load recipients on websocket broadcast
+useListenForEventsOnBus(
+        [
+            new EventBusSubscriber(
+                    [
+                        new TaskFailedEvent,
+                        new TaskFinishedEvent,
+                    ],
+                    (event: EventBusEventContract, payload?: any) => {
+                        // ToDo: Only refresh on appropriate task
+                        loadRecipients()
+                    }
+            ),
+        ],
+        UserTaskEventBus.NAME,
+)
 </script>
