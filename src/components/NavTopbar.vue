@@ -69,4 +69,6 @@ function logout() {
         //
     })
 }
+
+useEventBus()
 </script>
