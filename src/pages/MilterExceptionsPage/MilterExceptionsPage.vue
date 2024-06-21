@@ -92,7 +92,7 @@
         </div>
 
         <div v-if="Object.keys(milterExceptions).length === 0 && initialLoading" class="text-center mt-8">
-            <h3 class="mt-2 text-sm font-semibold text-gray-900">No milters exceptions</h3>
+            <h3 class="mt-2 text-sm font-semibold text-gray-900">No milter exceptions</h3>
             <p class="mt-1 text-sm text-gray-500">
                 Get started by creating a milter exception.
             </p>
