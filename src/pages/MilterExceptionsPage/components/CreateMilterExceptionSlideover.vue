@@ -14,7 +14,7 @@
                     <div class="space-y-4 pb-5 pt-6">
                         <div>
                             <label for="client_type" class="block text-sm font-medium leading-6 text-gray-900">Type</label>
-                            <select v-model="form.client_type" id="client_type" name="client_type" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-primary-600 sm:text-sm sm:leading-6">
+                            <select ref="clientTypeRef" v-model="form.client_type" id="client_type" name="client_type" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-primary-600 sm:text-sm sm:leading-6">
                                 <option value="">Please select</option>
                                 <option value="client_ipv4">IPv4</option>
                                 <option value="client_ipv6">IPv6</option>
@@ -68,13 +68,12 @@
 
 <script setup lang="ts">
 import BSlideover from '@/ui/BSlideover.vue'
-import {useModelWrapper} from '@hank-it/ui/vue'
+import {useModelWrapper, useOnOpen } from '@hank-it/ui/vue'
 import { ref} from 'vue'
 import BInput from '@/ui/BInput.vue'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
 import BTextarea from '@/ui/BTextarea.vue'
 import { MilterIndexRequest, MilterIndexResponse } from '@/api/requests/milters/MilterIndexRequest'
-import {useOnOpen} from '@hank-it/ui/vue'
 import { MilterExceptionCreateContent, MilterExceptionCreateRequest } from '@/api/requests/milters/MilterExceptionCreateRequest'
 
 const props = defineProps({
@@ -99,6 +98,7 @@ const request = new MilterExceptionCreateRequest()
 const milterIndexRequest = new MilterIndexRequest()
 
 const milters = ref({})
+const clientTypeRef = ref(null)
 
 function loadMilters() {
     return milterIndexRequest.send()
@@ -114,6 +114,8 @@ const {onOpen} = useOnOpen(props)
 
 onOpen(() => {
     loadMilters()
+
+    clientTypeRef.value.focus()
 })
 
 function submit() {

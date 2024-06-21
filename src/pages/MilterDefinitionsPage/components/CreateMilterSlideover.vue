@@ -12,7 +12,7 @@
                     </div>
 
                     <div class="space-y-4 pb-5 pt-6">
-                        <BInput v-model="form" :errors="formErrors" id="name" name="name">
+                        <BInput ref="nameRef" v-model="form" :errors="formErrors" id="name" name="name">
                             <template #label>
                                 Name
                             </template>
@@ -45,7 +45,7 @@
 
 <script setup lang="ts">
 import BSlideover from '@/ui/BSlideover.vue'
-import {useModelWrapper} from '@hank-it/ui/vue'
+import {useModelWrapper, useOnOpen} from '@hank-it/ui/vue'
 import { ref} from 'vue'
 import BInput from '@/ui/BInput.vue'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
@@ -67,8 +67,15 @@ const emits = defineEmits(['update:modelValue', 'success'])
 const isOpen = useModelWrapper(props, emits)
 
 const formErrors = ref({})
+const nameRef = ref(null)
 
 const request = new MilterCreateRequest()
+
+const {onOpen} = useOnOpen(props)
+
+onOpen(() => {
+    nameRef.value.focus()
+})
 
 function submit() {
     request

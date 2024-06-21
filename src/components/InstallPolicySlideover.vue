@@ -1,5 +1,5 @@
 <template>
-    <BSlideover v-model="isOpen">
+    <BSlideover v-model="isOpen" :initial-focus-ref="serverIdRef">
         <template #title>
             Install policy
         </template>
@@ -22,7 +22,7 @@
                             <template v-else>
                                 <div>
                                     <label for="server_id" class="block text-sm font-medium leading-6 text-gray-900">Servers</label>
-                                    <select multiple v-model="form.server_id" id="server_id" name="server_id" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-primary-600 sm:text-sm sm:leading-6">
+                                    <select ref="serverIdRef" multiple v-model="form.server_id" id="server_id" name="server_id" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-primary-600 sm:text-sm sm:leading-6">
                                         <option v-for="server in servers" :value="server.id" :key="server.id">{{ server.hostname }}</option>
                                     </select>
 
@@ -80,6 +80,8 @@ const form = ref({
 })
 
 const {onOpen} = useOnOpen(props)
+
+const serverIdRef = ref(null)
 
 const servers = ref([])
 

@@ -56,8 +56,6 @@ const serverShowRequest = new ServerShowRequest(props.id)
 
 serverShowRequest.send()
     .then(response => {
-        console.log(response.getData())
-
         form.value = response.getData()
     })
     .catch(exception => {

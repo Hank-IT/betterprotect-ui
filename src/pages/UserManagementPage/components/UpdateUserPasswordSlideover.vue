@@ -13,7 +13,7 @@
                     </div>
 
                     <div class="space-y-4 pb-5 pt-6">
-                        <BInput v-model="form" type="password" :errors="formErrors" id="password" name="password">
+                        <BInput ref="passwordRef" v-model="form" type="password" :errors="formErrors" id="password" name="password">
                             <template #label>
                                 Password
                             </template>
@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import BSlideover from '@/ui/BSlideover.vue'
-import {useModelWrapper} from '@hank-it/ui/vue'
+import {useModelWrapper, useOnOpen} from '@hank-it/ui/vue'
 import { ref} from 'vue'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
 import BInput from '@/ui/BInput.vue'
@@ -61,6 +61,13 @@ const emits = defineEmits(['update:modelValue', 'success'])
 const isOpen = useModelWrapper(props, emits)
 
 const formErrors = ref({})
+const passwordRef = ref(null)
+
+const {onOpen} = useOnOpen(props)
+
+onOpen(() => {
+    passwordRef.value.focus()
+})
 
 const request = new UserPasswordUpdateRequest
 

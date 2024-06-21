@@ -14,6 +14,7 @@
         <div class="sm:flex sm:items-center mt-6">
             <div class="sm:flex-auto">
                 <input
+                    ref="searchRef"
                     v-model="search"
                     name="search"
                     type="text"
@@ -119,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed} from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
 import {useIsOpen} from '@hank-it/ui/vue'
 import {Paginator, RequestDriver} from '@hank-it/ui/service/pagination'
@@ -165,6 +166,7 @@ const pageNumber = computed({
 const {isOpen: createTransportSlideoverOpen, isOpenKey: createTransportSlideoverKey} = useIsOpen()
 
 const initialLoading = ref(false)
+const searchRef = ref(null)
 
 const paginator = new Paginator(new RequestDriver(transportIndexRequest))
 
@@ -180,4 +182,8 @@ function loadTransports(page: Number = undefined) {
 const loadTransportsDebounced = debounce(() => {
     loadTransports(1)
 }, 250)
+
+onMounted(() => {
+    searchRef.value.focus()
+})
 </script>

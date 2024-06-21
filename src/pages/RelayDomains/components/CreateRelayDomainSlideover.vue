@@ -12,7 +12,7 @@
                     </div>
 
                     <div class="space-y-4 pb-5 pt-6">
-                        <BInput v-model="form" :errors="formErrors" id="domain" name="domain" class="sm:col-span-6">
+                        <BInput ref="domainRef" v-model="form" :errors="formErrors" id="domain" name="domain" class="sm:col-span-6">
                             <template #label>
                                 Domain
                             </template>
@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import BSlideover from '@/ui/BSlideover.vue'
-import {useModelWrapper} from '@hank-it/ui/vue'
+import {useModelWrapper, useOnOpen} from '@hank-it/ui/vue'
 import { ref} from 'vue'
 import BInput from '@/ui/BInput.vue'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
@@ -51,10 +51,17 @@ const emits = defineEmits(['update:modelValue', 'success'])
 
 const isOpen = useModelWrapper(props, emits)
 
+const {onOpen} = useOnOpen(props)
+
 const formErrors = ref({})
 const genericError = ref(false)
+const domainRef = ref(null)
 
 const request = new RelayDomainCreatRequest()
+
+onOpen(() => {
+    domainRef.value.focus()
+})
 
 function submit() {
     request

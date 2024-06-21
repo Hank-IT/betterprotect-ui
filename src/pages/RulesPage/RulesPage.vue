@@ -14,6 +14,7 @@
         <div class="sm:flex sm:items-center mt-6">
             <div class="sm:flex-auto">
                 <input
+                    ref="searchRef"
                     v-model="search"
                     name="search"
                     type="text"
@@ -105,7 +106,7 @@
 </template>
 
 <script setup>
-import {ref, computed} from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import {RuleIndexRequest} from '@/api/requests/rules/RuleIndexRequest.ts'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
 import CreateRuleSlideover from '@/pages/RulesPage/components/CreateRuleSlideover.vue'
@@ -141,6 +142,8 @@ const ruleIndexRequest = new RuleIndexRequest()
 
 const initialLoading = ref(false)
 
+const searchRef = ref(null)
+
 function loadRules() {
     return ruleIndexRequest
         .setParams({
@@ -161,5 +164,9 @@ const loadRuleDebounced = debounce(loadRules, 250, {
 
 loadRules().then(() => {
     initialLoading.value = true
+})
+
+onMounted(() => {
+    searchRef.value.focus()
 })
 </script>

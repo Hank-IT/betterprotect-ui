@@ -14,6 +14,7 @@
         <div class="sm:flex sm:items-center mt-6">
             <div class="sm:flex-auto">
                 <input
+                    ref="searchRef"
                     v-model="search"
                     name="search"
                     type="text"
@@ -89,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed} from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
 import {useIsOpen} from '@hank-it/ui/vue'
 import {Paginator, RequestDriver} from '@hank-it/ui/service/pagination'
@@ -105,6 +106,7 @@ import { useAuthStore } from '@/stores/auth'
 const auth = useAuthStore()
 
 const internalSearch = ref('')
+const searchRef = ref(null)
 
 const relayDomainIndexRequest = new RelayDomainIndexRequest
 
@@ -150,4 +152,8 @@ function loadRelayDomains(page: Number = undefined) {
 const loadRelayDomainsDebounced = debounce(() => {
     loadRelayDomains(1)
 }, 250)
+
+onMounted(() => {
+    searchRef.value.focus()
+})
 </script>

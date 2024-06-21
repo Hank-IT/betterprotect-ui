@@ -14,6 +14,7 @@
         <div class="sm:flex sm:items-center mt-6">
             <div class="sm:flex-auto">
                 <input
+                    ref="searchRef"
                     v-model="search"
                     name="search"
                     type="text"
@@ -103,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed} from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
 import {useIsOpen} from '@hank-it/ui/vue'
 import {Paginator, RequestDriver} from '@hank-it/ui/service/pagination'
@@ -151,6 +152,7 @@ const {isOpen: recipientLdapQuerySlideoverOpen, isOpenKey: recipientLdapQuerySli
 const auth = useAuthStore()
 
 const initialLoading = ref(false)
+const searchRef = ref(null)
 
 const paginator = new Paginator(new RequestDriver(recipientIndexRequest))
 
@@ -166,6 +168,10 @@ function loadRecipients(page: Number = undefined) {
 const loadRecipientsDebounced = debounce(() => {
     loadRecipients(1)
 }, 250)
+
+onMounted(() => {
+    searchRef.value.focus()
+})
 
 // ToDo: Load recipients on websocket broadcast
 </script>

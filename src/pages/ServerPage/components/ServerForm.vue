@@ -6,7 +6,7 @@
                 <p class="mt-1 text-sm leading-6 text-gray-600">Specify the hostname and SSH connection details.</p>
 
                 <div class="mt-5 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                    <BInput v-model="form" :errors="formErrors" id="hostname" name="hostname" class="sm:col-span-4">
+                    <BInput ref="hostnameInputRef" v-model="form" :errors="formErrors" id="hostname" name="hostname" class="sm:col-span-4">
                         <template #label>
                             Hostname
                         </template>
@@ -223,6 +223,7 @@ import BTextarea from '@/ui/BTextarea.vue'
 import {useRouter} from 'vue-router'
 import {useModelWrapper} from '@hank-it/ui/vue'
 import usePasswordInputHandling from '@/composables/usePasswordInputHandling.ts'
+import { ref, onMounted } from 'vue'
 
 const props = defineProps({
     mode: {
@@ -236,6 +237,12 @@ const props = defineProps({
 })
 
 const emits = defineEmits(['submit', 'update:modelValue'])
+
+const hostnameInputRef = ref(null)
+
+onMounted(() => {
+    hostnameInputRef.value.focus()
+})
 
 const router = useRouter()
 

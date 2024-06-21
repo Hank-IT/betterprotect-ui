@@ -14,7 +14,7 @@
                     <div class="space-y-4 pb-5 pt-6">
                         <div>
                             <label for="role" class="block text-sm font-medium leading-6 text-gray-900">Role</label>
-                            <select v-model="form.role" id="role" name="role" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-primary-600 sm:text-sm sm:leading-6">
+                            <select ref="roleRef" v-model="form.role" id="role" name="role" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-primary-600 sm:text-sm sm:leading-6">
                                 <option value="">Please select</option>
                                 <option value="readonly">Readonly</option>
                                 <option value="authorizer">Authorizer</option>
@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import BSlideover from '@/ui/BSlideover.vue'
-import {useModelWrapper} from '@hank-it/ui/vue'
+import {useModelWrapper, useOnOpen} from '@hank-it/ui/vue'
 import { ref} from 'vue'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
 import { UserRoleUpdatePayload, UserRoleUpdateRequest } from '@/api/requests/user/UserRoleUpdateRequest'
@@ -63,6 +63,13 @@ const emits = defineEmits(['update:modelValue', 'success'])
 const isOpen = useModelWrapper(props, emits)
 
 const formErrors = ref({})
+const roleRef = ref(null)
+
+const {onOpen} = useOnOpen(props)
+
+onOpen(() => {
+    roleRef.value.focus()
+})
 
 const request = new UserRoleUpdateRequest
 
