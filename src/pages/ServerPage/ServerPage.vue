@@ -11,6 +11,7 @@
             </div>
             <div class="mt-4 flex md:ml-4 md:mt-0">
                 <button @click="router.push({ name: 'server.create' })"
+                        v-if="auth.check(['editor', 'administrator'])"
                         type="button"
                         class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                 >Create server</button>
@@ -34,8 +35,11 @@ import {useRouter} from 'vue-router'
 import {ref} from 'vue'
 import ServerItem from '@/pages/ServerPage/components/ServerItem.vue'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+
+const auth = useAuthStore()
 
 const servers = ref([])
 

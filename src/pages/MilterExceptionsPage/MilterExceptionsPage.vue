@@ -12,6 +12,7 @@
 
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none space-x-4">
                 <button @click="createMilterExceptionsSlideoverOpen = true"
+                        v-if="auth.check(['editor', 'administrator'])"
                         type="button"
                         class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                     Create milter exception
@@ -52,11 +53,35 @@
                                     <span class="text-gray-700">{{ milterException.description }}</span>
                                 </td>
                                 <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3 space-x-2">
-                                    <UpButton entity="milter-exception" :id="milterException.id" @success="loadMilterExceptions" />
-                                    <DownButton entity="milter-exception" :id="milterException.id" @success="loadMilterExceptions" />
-                                    <DisableButton v-if="milterException.active" entity="milter-exception" :id="milterException.id" @success="loadMilterExceptions" />
-                                    <EnableButton v-if="! milterException.active" entity="milter-exception" :id="milterException.id" @success="loadMilterExceptions" />
-                                    <DeleteMilterExceptionButton  :id="milterException.id" @success="loadMilterExceptions" />
+                                    <UpButton
+                                            v-if="auth.check(['editor', 'administrator'])"
+                                            entity="milter-exception"
+                                            :id="milterException.id"
+                                            @success="loadMilterExceptions"
+                                    />
+                                    <DownButton
+                                            v-if="auth.check(['editor', 'administrator'])"
+                                            entity="milter-exception"
+                                            :id="milterException.id"
+                                            @success="loadMilterExceptions"
+                                    />
+                                    <DisableButton
+                                            v-if="milterException.active && auth.check(['editor', 'administrator'])"
+                                            entity="milter-exception"
+                                            :id="milterException.id"
+                                            @success="loadMilterExceptions"
+                                    />
+                                    <EnableButton
+                                            v-if="! milterException.active && auth.check(['editor', 'administrator'])"
+                                            entity="milter-exception"
+                                            :id="milterException.id"
+                                            @success="loadMilterExceptions"
+                                    />
+                                    <DeleteMilterExceptionButton
+                                            v-if="auth.check(['editor', 'administrator'])"
+                                            :id="milterException.id"
+                                            @success="loadMilterExceptions"
+                                    />
                                 </td>
                             </tr>
                             </tbody>
@@ -88,6 +113,7 @@ import EnableButton from '@/components/EnableButton.vue'
 import DownButton from '@/components/DownButton.vue'
 import DisableButton from '@/components/DisableButton.vue'
 import UpButton from '@/components/UpButton.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const milterExceptions = ref({})
 
@@ -96,6 +122,8 @@ const {isOpen: createMilterExceptionsSlideoverOpen, isOpenKey: createMilterExcep
 const initialLoading = ref(false)
 
 const milterExceptionsIndexRequest = new MilterExceptionIndexRequest()
+
+const auth = useAuthStore()
 
 function loadMilterExceptions() {
     return milterExceptionsIndexRequest.send()

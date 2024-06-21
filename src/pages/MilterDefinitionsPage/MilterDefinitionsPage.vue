@@ -12,6 +12,7 @@
 
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none space-x-4">
                 <button @click="createMilterSlideoverOpen = true"
+                        v-if="auth.check(['editor', 'administrator'])"
                         type="button"
                         class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                     Create milter
@@ -50,7 +51,11 @@
                                     <span class="text-gray-700">{{ milter.description }}</span>
                                 </td>
                                 <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3 space-x-2">
-                                    <DeleteMilterButton :id="milter.id" @success="loadMilters" />
+                                    <DeleteMilterButton
+                                            v-if="auth.check(['editor', 'administrator'])"
+                                            :id="milter.id"
+                                            @success="loadMilters"
+                                    />
                                 </td>
                             </tr>
                             </tbody>
@@ -78,6 +83,7 @@ import {useIsOpen} from '@hank-it/ui/vue'
 import {MilterIndexRequest, MilterIndexResponse} from '@/api/requests/milters/MilterIndexRequest'
 import DeleteMilterButton from '@/pages/MilterDefinitionsPage/components/DeleteMilterButton.vue'
 import CreateMilterSlideover from '@/pages/MilterDefinitionsPage/components/CreateMilterSlideover.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const milters = ref({})
 
@@ -86,6 +92,8 @@ const {isOpen: createMilterSlideoverOpen, isOpenKey: createMilterSlideoverKey} =
 const initialLoading = ref(false)
 
 const milterIndexRequest = new MilterIndexRequest()
+
+const auth = useAuthStore()
 
 function loadMilters() {
     return milterIndexRequest.send()

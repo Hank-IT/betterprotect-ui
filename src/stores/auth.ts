@@ -8,4 +8,9 @@ export const useAuthStore = defineStore('auth', {
   getters: {
     authenticated: (state) => !!state.user
   },
+  actions: {
+    check(requiredRoles: string[]): boolean {
+      return requiredRoles.includes(this.user.role)
+    },
+  },
 })

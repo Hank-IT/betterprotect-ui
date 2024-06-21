@@ -23,6 +23,7 @@
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                 <button @click="createRuleSlideoverOpen = true"
+                        v-if="auth.check(['authorizer', 'editor', 'administrator'])"
                         type="button"
                         class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                     Create rule
@@ -73,11 +74,11 @@
                                     <span v-if="rule.action === 'reject'" class="text-red-500 uppercase">{{ rule.action }}</span>
                                 </td>
                                 <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3 space-x-2">
-                                    <UpButton entity="client-sender-access" :id="rule.id" @success="loadRules" />
-                                    <DownButton entity="client-sender-access" :id="rule.id" @success="loadRules" />
-                                    <DisableButton v-if="rule.active" entity="client-sender-access" :id="rule.id" @success="loadRules" />
-                                    <EnableButton v-if="! rule.active" entity="client-sender-access" :id="rule.id" @success="loadRules" />
-                                    <DeleteRuleButton :id="rule.id" @success="loadRules" />
+                                    <UpButton v-if="auth.check(['authorizer', 'editor', 'administrator'])" entity="client-sender-access" :id="rule.id" @success="loadRules" />
+                                    <DownButton v-if="auth.check(['authorizer', 'editor', 'administrator'])" entity="client-sender-access" :id="rule.id" @success="loadRules" />
+                                    <DisableButton v-if="rule.active && auth.check(['authorizer', 'editor', 'administrator'])" entity="client-sender-access" :id="rule.id" @success="loadRules" />
+                                    <EnableButton v-if="! rule.active && auth.check(['authorizer', 'editor', 'administrator'])" entity="client-sender-access" :id="rule.id" @success="loadRules" />
+                                    <DeleteRuleButton v-if="auth.check(['authorizer', 'editor', 'administrator'])" :id="rule.id" @success="loadRules" />
                                 </td>
                             </tr>
                             </tbody>
@@ -115,6 +116,7 @@ import DisableButton from '@/components/DisableButton.vue'
 import EnableButton from '@/components/EnableButton.vue'
 import DeleteRuleButton from '@/pages/RulesPage/components/DeleteRuleButton.vue'
 import {debounce} from 'lodash'
+import { useAuthStore } from '@/stores/auth.ts'
 
 const rules = ref({})
 
@@ -132,6 +134,8 @@ const search = computed({
 })
 
 const {isOpen: createRuleSlideoverOpen, isOpenKey: createRuleSlideoverKey} = useIsOpen()
+
+const auth = useAuthStore()
 
 const ruleIndexRequest = new RuleIndexRequest()
 

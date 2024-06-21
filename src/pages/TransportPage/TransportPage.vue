@@ -23,6 +23,7 @@
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                 <button @click="createTransportSlideoverOpen = true"
+                        v-if="auth.check(['editor', 'administrator'])"
                         type="button"
                         class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                     Create transport
@@ -81,9 +82,9 @@
                                     <span class="text-gray-700">{{ transport.data_source }}</span>
                                 </td>
                                 <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3 space-x-2">
-                                    <DisableButton v-if="transport.active" entity="transport" :id="transport.id" @success="loadTransports" />
-                                    <EnableButton v-if="! transport.active" entity="transport" :id="transport.id" @success="loadTransports" />
-                                    <DeleteTransportButton :id="transport.id" @success="loadTransports" />
+                                    <DisableButton v-if="transport.active && auth.check(['editor', 'administrator'])" entity="transport" :id="transport.id" @success="loadTransports" />
+                                    <EnableButton v-if="! transport.active &&auth.check(['editor', 'administrator'])" entity="transport" :id="transport.id" @success="loadTransports" />
+                                    <DeleteTransportButton v-if="auth.check(['editor', 'administrator'])" :id="transport.id" @success="loadTransports" />
                                 </td>
                             </tr>
                             </tbody>
@@ -129,8 +130,11 @@ import BPagination from '@/ui/BPagination.vue'
 import {TransportIndexRequest} from '@/api/requests/transports/TransportIndexRequest'
 import CreateTransportSlideover from '@/pages/TransportPage/components/CreateTransportSlideover.vue'
 import DeleteTransportButton from '@/pages/TransportPage/components/DeleteTransportButton.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const internalSearch = ref('')
+
+const auth = useAuthStore()
 
 const transportIndexRequest = new TransportIndexRequest
 

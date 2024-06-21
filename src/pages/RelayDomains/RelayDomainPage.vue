@@ -23,6 +23,7 @@
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                 <button @click="createRelayDomainSlideoverOpen = true"
+                        v-if="auth.check(['editor', 'administrator'])"
                         type="button"
                         class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                     Create relay domain
@@ -51,9 +52,9 @@
                                     <span class="text-gray-700">{{ relayDomain.domain }}</span>
                                 </td>
                                 <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3 space-x-2">
-                                    <DisableButton v-if="relayDomain.active" entity="relay-domain" :id="relayDomain.id" @success="loadRelayDomains" />
-                                    <EnableButton v-if="! relayDomain.active" entity="relay-domain" :id="relayDomain.id" @success="loadRelayDomains" />
-                                    <DeleteRelayDomainButton :id="relayDomain.id" @success="loadRelayDomains" />
+                                    <DisableButton v-if="relayDomain.active && auth.check(['editor', 'administrator'])" entity="relay-domain" :id="relayDomain.id" @success="loadRelayDomains" />
+                                    <EnableButton v-if="! relayDomain.active && auth.check(['editor', 'administrator'])" entity="relay-domain" :id="relayDomain.id" @success="loadRelayDomains" />
+                                    <DeleteRelayDomainButton v-if="auth.check(['editor', 'administrator'])" :id="relayDomain.id" @success="loadRelayDomains" />
                                 </td>
                             </tr>
                             </tbody>
@@ -99,6 +100,9 @@ import BPagination from '@/ui/BPagination.vue'
 import {RelayDomainIndexRequest} from '@/api/requests/relayDomains/RelayDomainIndexRequest'
 import DeleteRelayDomainButton from '@/pages/RelayDomains/components/DeleteRelayDomainButton.vue'
 import CreateRelayDomainSlideover from '@/pages/RelayDomains/components/CreateRelayDomainSlideover.vue'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
 
 const internalSearch = ref('')
 

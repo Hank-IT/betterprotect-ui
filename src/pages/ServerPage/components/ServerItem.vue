@@ -37,7 +37,7 @@
                 </dd>
             </div>
             <ServerItemQueueCount :server="server" />
-            <div class="flex justify-end gap-x-4 py-3">
+            <div v-if="auth.check(['editor', 'administrator'])" class="flex justify-end gap-x-4 py-3">
                 <button
                         @click="router.push({ name: 'server.edit', params: { id: server.id } })"
                         type="button"
@@ -78,12 +78,15 @@ import {ServerDeleteRequest} from '@/api/requests/servers/ServerDeleteRequest'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
 import {useIsOpen} from '@hank-it/ui/vue'
 import ConfirmationDialog from '@/ui/ConfirmationDialog.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const props = defineProps({
     server: Object as ServerResource,
 })
 
 const emits = defineEmits(['server-deleted'])
+
+const auth = useAuthStore()
 
 const router = useRouter()
 

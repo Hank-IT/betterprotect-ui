@@ -85,6 +85,8 @@ const isOpen = useModelWrapper(props, emits)
 
 const formErrors = ref({})
 
+const genericError = ref(false)
+
 const request = new UserCreateRequest
 
 function submit() {

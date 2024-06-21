@@ -9,9 +9,9 @@
             <div class="h-6 w-px bg-gray-200 lg:hidden" aria-hidden="true" />
 
             <div class="flex flex-1 gap-x-4 lg:gap-x-6">
-                <form class="relative flex flex-1" action="#" method="GET">
-                    <button type="button" class="rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Install Policy</button>
-                </form>
+                <div class="relative flex flex-1">
+                    <button v-if="auth.check(['authorizer', 'editor', 'administrator'])" @click="isInstallPolicySlideoverOpen = true" type="button" class="rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">Install Policy</button>
+                </div>
                 <div class="flex items-center gap-x-4 lg:gap-x-6">
                     <button @click="taskStore.isSlideoverOpen = true" type="button" class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
                         <span class="sr-only">View tasks</span>
@@ -31,7 +31,8 @@
                 </div>
             </div>
 
-          <TaskSlideover v-model="taskStore.isSlideoverOpen" />
+            <TaskSlideover v-model="taskStore.isSlideoverOpen" />
+            <InstallPolicySlideover v-model="isInstallPolicySlideoverOpen" :key="installPolicySlideoverKey" />
         </div>
 </template>
 
@@ -43,6 +44,8 @@ import TaskSlideover from '@/components/TaskSlideover/TaskSlideover.vue'
 import { useAuthStore } from '@/stores/auth'
 import { UserLogoutRequest } from '@/api/requests/auth/UserLogoutRequest'
 import { useRouter } from 'vue-router'
+import InstallPolicySlideover from '@/components/InstallPolicySlideover.vue'
+import {useIsOpen} from '@hank-it/ui/vue'
 
 const sidebarOpen = ref(false)
 
@@ -51,6 +54,8 @@ const taskStore = useTaskStore()
 const auth = useAuthStore()
 
 const userLogoutRequest = new UserLogoutRequest()
+
+const {isOpen: isInstallPolicySlideoverOpen, isOpenKey: installPolicySlideoverKey} = useIsOpen()
 
 const router = useRouter()
 

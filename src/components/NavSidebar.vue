@@ -32,14 +32,6 @@
                                 <ul role="list" class="flex flex-1 flex-col gap-y-7">
                                     <li>
                                         <ul role="list" class="-mx-2 space-y-1">
-                                            <!--
-                                            <li v-for="item in navigation" :key="item.name">
-                                                <a :href="item.href" :class="[item.current ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
-                                                    <component :is="item.icon" :class="[item.current ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600', 'h-6 w-6 shrink-0']" aria-hidden="true" />
-                                                    {{ item.name }}
-                                                </a>
-                                            </li>
-                                            -->
                                             <li>
                                                 <a href="#"
                                                    :class="[false ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
@@ -121,14 +113,6 @@
                     <li>
                         <div class="text-xs font-semibold leading-6 text-gray-400">Policy</div>
                         <ul role="list" class="-mx-2 mt-2 space-y-1">
-                            <!--
-                            <li v-for="team in teams" :key="team.name">
-                                <a :href="team.href" :class="[team.current ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
-                                    <span :class="[team.current ? 'border-indigo-600 text-indigo-600' : 'border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600', 'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium']">{{ team.initial }}</span>
-                                    <span class="truncate">{{ team.name }}</span>
-                                </a>
-                            </li>
-                            -->
                             <li>
                                 <RouterLink
                                         v-slot="{ href, navigate, isActive }"
@@ -209,7 +193,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="mt-auto">
+                    <li v-if="auth.check(['administrator'])" class="mt-auto">
                         <RouterLink
                                 v-slot="{ href, navigate, isActive }"
                                 :to="{ name: 'users' }"
@@ -292,6 +276,7 @@ import {
     XMarkIcon
 } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
+import { useAuthStore } from '@/stores/auth'
 
 const navigation = [
 
@@ -318,4 +303,6 @@ const userNavigation = [
 ]
 
 const sidebarOpen = ref(false)
+
+const auth = useAuthStore()
 </script>

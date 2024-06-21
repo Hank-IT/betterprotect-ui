@@ -23,12 +23,14 @@
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none space-x-4">
                 <button @click="createRecipientSlideoverOpen = true"
+                        v-if="auth.check(['editor', 'administrator'])"
                         type="button"
                         class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                     Create recipient
                 </button>
 
                 <button @click="recipientLdapQuerySlideoverOpen = true"
+                        v-if="auth.check(['editor', 'administrator'])"
                         type="button"
                         class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                     LDAP Import
@@ -63,9 +65,9 @@
                                     <span class="text-gray-700">{{ recipient.data_source }}</span>
                                 </td>
                                 <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3 space-x-2">
-                                    <DisableButton v-if="recipient.active" entity="relay-recipient" :id="recipient.id" @success="loadRecipients" />
-                                    <EnableButton v-if="! recipient.active" entity="relay-recipient" :id="recipient.id" @success="loadRecipients" />
-                                    <DeleteRecipientButton :id="recipient.id" @success="loadRecipients" />
+                                    <DisableButton v-if="recipient.active && auth.check(['editor', 'administrator'])" entity="relay-recipient" :id="recipient.id" @success="loadRecipients" />
+                                    <EnableButton v-if="! recipient.active && auth.check(['editor', 'administrator'])" entity="relay-recipient" :id="recipient.id" @success="loadRecipients" />
+                                    <DeleteRecipientButton v-if="auth.check(['editor', 'administrator'])" :id="recipient.id" @success="loadRecipients" />
                                 </td>
                             </tr>
                             </tbody>
@@ -113,6 +115,7 @@ import CreateRecipientSlideover from '@/pages/RecipientsPage/components/CreateRe
 import DeleteRecipientButton from '@/pages/RecipientsPage/components/DeleteRecipientButton.vue'
 import BPagination from '@/ui/BPagination.vue'
 import RecipientLdapQuerySlideover from '@/pages/RecipientsPage/components/RecipientLdapQuerySlideover.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const internalSearch = ref('')
 
@@ -144,6 +147,8 @@ const pageNumber = computed({
 
 const {isOpen: createRecipientSlideoverOpen, isOpenKey: createRecipientSlideoverKey} = useIsOpen()
 const {isOpen: recipientLdapQuerySlideoverOpen, isOpenKey: recipientLdapQuerySlideoverKey} = useIsOpen()
+
+const auth = useAuthStore()
 
 const initialLoading = ref(false)
 
