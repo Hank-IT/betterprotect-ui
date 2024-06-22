@@ -12,10 +12,10 @@
                             <div class="flex min-w-0 gap-x-4">
                                 <div class="min-w-0 flex-auto">
                                     <p class="text-sm font-semibold leading-6 text-gray-900">
-                        <span>
-                          <span class="absolute inset-x-0 -top-px bottom-0" />
-                          {{ task.task }}
-                        </span>
+                                    <span>
+                                      <span class="absolute inset-x-0 -top-px bottom-0" />
+                                      {{ task.task }}
+                                    </span>
                                     </p>
                                     <p class="mt-1 flex text-xs leading-5 text-gray-500">
                                         <span class="relative truncate hover:underline">{{ task.username }}</span>
@@ -112,27 +112,14 @@ const { fromISOToRelativeString, fromISOToLocalDateTimeString } = useDateHandlin
 
 const isOpen = useModelWrapper(props, emits)
 
-const tasks = ref([])
-
 const taskIndexRequest = new TaskIndexRequest()
 
 const paginator = new InfiniteScroller(new RequestDriver(taskIndexRequest))
-
-function loadTasks() {
-    taskIndexRequest.send()
-        .then((result: TaskIndexResponse) => {
-            tasks.value = result.getData()
-        })
-        .catch(error => {
-            //
-        })
-}
 
 const { onBoolean } = useOnBoolean(props)
 
 onBoolean({
         truthy: () => {
-            // loadTasks()
             paginator.init(1, 10)
         },
         falsy: () => {
@@ -146,8 +133,6 @@ const loadNextDebounced = debounce(event => {
 }, 100)
 
 function scroll(event) {
-    console.log('scroll')
-
     if (isAtBottom(event.target.scrollHeight, event.target.scrollTop, event.target.clientHeight)) {
         loadNextDebounced()
     }
@@ -164,7 +149,9 @@ useListenForEventsOnBus(
                 new TaskStartedEvent()
             ],
             (event: EventBusEventContract, payload?: any) => {
-                paginator.refresh()
+                paginator.refresh(1, {
+                    replace: true
+                })
             }
         )
     ],

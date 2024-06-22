@@ -190,8 +190,9 @@ useListenForEventsOnBus(
                         new TaskFinishedEvent,
                     ],
                     (event: EventBusEventContract, payload?: any) => {
-                        // ToDo: Only refresh on appropriate task
-                        loadRecipients()
+                        if (payload.task === 'refresh-ldap-recipients') {
+                            loadRecipients()
+                        }
                     }
             ),
         ],
