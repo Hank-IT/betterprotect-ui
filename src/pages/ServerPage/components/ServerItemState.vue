@@ -54,6 +54,15 @@ import type {ServerResource} from '@/api/requests/servers/ServerIndexRequest'
 import BSlideover from '@/ui/BSlideover.vue'
 import {useIsOpen} from '@hank-it/ui/vue'
 import useDateHandling from '@/composables/useDateHandling'
+import useListenForEventsOnBus from '@/domain/eventBus/composables/useListenForEventsOnBus'
+import EventBusSubscriber from '@/domain/eventBus/EventBusSubscriber'
+import TaskStartedEvent from '@/domain/eventBus/events/TaskStartedEvent'
+import type EventBusEventContract from '@/domain/eventBus/contracts/EventBusEventContract'
+import TaskFailedEvent from '@/domain/eventBus/events/TaskFailedEvent'
+import TaskFinishedEvent from '@/domain/eventBus/events/TaskFinishedEvent'
+import UserTaskEventBus from '@/domain/eventBus/channels/UserTaskEventBus'
+import ServerMonitoredEvent from '@/domain/eventBus/events/ServerMonitoredEvent'
+import MonitoringEventBus from '@/domain/eventBus/channels/MonitoringEventBus'
 const {fromISOToRelativeString, fromISOToLocalDateTimeString} = useDateHandling()
 
 const props = defineProps({
@@ -67,12 +76,30 @@ const alertCount = ref()
 
 const {isOpen} = useIsOpen()
 
-request
-    .send()
-    .then(response => {
-        const state = response.getData()
+function loadState() {
+    request
+        .send()
+        .then(response => {
+            const state = response.getData()
 
-        alerts.value = state
-        alertCount.value = state.filter(item => !item.available).length
-    })
+            alerts.value = state
+            alertCount.value = state.filter(item => !item.available).length
+        })
+}
+
+loadState()
+
+useListenForEventsOnBus(
+    [
+        new EventBusSubscriber(
+            [
+                new ServerMonitoredEvent(),
+            ],
+            (event: EventBusEventContract, payload?: any) => {
+                loadState()
+            }
+        ),
+    ],
+    MonitoringEventBus.NAME,
+)
 </script>

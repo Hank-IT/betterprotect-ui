@@ -3,6 +3,7 @@ export const useTaskStore = defineStore('task', {
   state: (): State => {
     return {
       isSlideoverOpen: false,
+      tasksRunning: false,
       tasks: [],
     }
   },
