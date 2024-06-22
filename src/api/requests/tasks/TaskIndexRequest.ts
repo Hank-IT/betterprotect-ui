@@ -1,4 +1,5 @@
-import { BaseRequest, JsonResponse } from '@hank-it/ui/service/requests'
+import { BaseRequest, JsonResponse, type PaginatableRequest } from '@hank-it/ui/service/requests'
+import type {PaginationResponseContract} from '@hank-it/ui/service/pagination'
 
 export interface TaskProgressResource {
   id: string,
@@ -19,23 +20,33 @@ export interface TaskResource {
   updated_at: string,
 }
 
-export class TaskIndexResponse extends JsonResponse {
+export class TaskIndexResponse extends JsonResponse implements PaginationResponseContract  {
   public dataHandler(body): TaskResource[] {
     return body.data
   }
+
+  public getTotal(): number {
+    return this.body.meta.total
+  }
 }
 
-export class TaskIndexRequest extends BaseRequest {
+export class TaskIndexRequest extends BaseRequest implements PaginatableRequest {
   method(): string {
     return 'GET'
   }
 
   url(): string {
-    // ToDo
-    return '/api/v1/tasks?page_number=1&page_size=10'
+    return '/api/v1/tasks'
   }
 
   public getResponse() {
     return new TaskIndexResponse
+  }
+
+  public setPaginationParams(page: number, size: number): BaseRequest {
+    return this.withParams({
+      page_number: page,
+      page_size: size,
+    })
   }
 }

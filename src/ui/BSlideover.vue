@@ -9,7 +9,7 @@
                         <TransitionChild as="template" enter="transform transition ease-in-out duration-500 sm:duration-700" enter-from="translate-x-full" enter-to="translate-x-0" leave="transform transition ease-in-out duration-500 sm:duration-700" leave-from="translate-x-0" leave-to="translate-x-full">
                             <DialogPanel class="pointer-events-auto w-screen max-w-md">
                                 <div class="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
-                                    <div class="h-0 flex-1 overflow-y-auto">
+                                    <div class="h-0 flex-1 overflow-hidden">
                                         <div class="bg-primary-700 px-4 py-6 sm:px-6">
                                             <div class="flex items-center justify-between">
                                                 <DialogTitle class="text-base font-semibold leading-6 text-white">
@@ -24,11 +24,15 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="flex flex-1 flex-col justify-between">
+                                        <div class="relative flex flex-1 flex-col h-[calc(100vh-142px)] justify-between overflow-y-auto" @scroll="event => emit('scroll', event)">
+                                            <div class="absolute w-full top-0 right-0">
+                                                <ProgressLoader v-if="isLoading"/>
+                                            </div>
+
                                             <slot />
                                         </div>
                                     </div>
-                                   <slot name="footer" />
+                                    <slot name="footer" />
                                 </div>
                             </DialogPanel>
                         </TransitionChild>
@@ -43,12 +47,14 @@
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { useModelWrapper } from '@hank-it/ui/vue'
+import ProgressLoader from '@/ui/ProgressLoader.vue'
 
 const props = defineProps({
     modelValue: Boolean,
+    isLoading: Boolean,
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'scroll'])
 
 const open = useModelWrapper(props, emit)
 </script>
