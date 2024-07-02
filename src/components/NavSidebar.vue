@@ -48,10 +48,17 @@
                                                 </RouterLink>
                                             </li>
                                             <li>
-                                                <a href="#"
-                                                   :class="[false ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
-                                                    Log Viewer
-                                                </a>
+                                                <RouterLink
+                                                    v-slot="{ href, navigate, isActive }"
+                                                    :to="{ name: 'logging.index' }"
+                                                    custom
+                                                >
+                                                    <a
+                                                        :href="href"
+                                                        :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
+                                                        @click="navigate"
+                                                    >Log Viewer</a>
+                                                </RouterLink>
                                             </li>
                                             <li>
                                                 <a href="#"
@@ -192,10 +199,17 @@
                                 </RouterLink>
                             </li>
                             <li>
-                                <a href="#"
-                                   :class="[false ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
-                                    Log Viewer
-                                </a>
+                                <RouterLink
+                                    v-slot="{ href, navigate, isActive }"
+                                    :to="{ name: 'logging.index' }"
+                                    custom
+                                >
+                                    <a
+                                        :href="href"
+                                        :class="[isActive ? 'bg-gray-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50 hover:text-primary-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']"
+                                        @click="navigate"
+                                    >Log Viewer</a>
+                                </RouterLink>
                             </li>
                             <li>
                                 <a href="#"

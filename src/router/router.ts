@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
 import LoginPage from '@/pages/LoginPage/LoginPage.vue'
 import ServerPage from '@/pages/ServerPage/ServerPage.vue'
 import ParentRouterView from '@/components/ParentRouterView.vue'
@@ -11,6 +11,8 @@ import RelayDomainPage from '@/pages/RelayDomains/RelayDomainPage.vue'
 import MilterDefinitionsPage from '@/pages/MilterDefinitionsPage/MilterDefinitionsPage.vue'
 import MilterExceptionsPage from '@/pages/MilterExceptionsPage/MilterExceptionsPage.vue'
 import UserManagementPage from '@/pages/UserManagementPage/UserManagementPage.vue'
+import LogPage from '@/pages/LogPage/LogPage.vue'
+import LogDetailPage from '@/pages/LogPage/LogDetailPage.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +47,23 @@ const router = createRouter({
                     name: 'server.edit',
                     props: true
                 }
+            ]
+        },
+        {
+            path: '/logging',
+            component: ParentRouterView,
+            children: [
+                {
+                    path: '',
+                    component: LogPage,
+                    name: 'logging.index',
+                },
+                {
+                    path: ':id',
+                    component: LogDetailPage,
+                    name: 'logging.details',
+                    props: true
+                },
             ]
         },
         {
