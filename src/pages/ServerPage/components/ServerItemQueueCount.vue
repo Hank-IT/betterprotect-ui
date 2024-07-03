@@ -1,5 +1,5 @@
 <template>
-    <div class="flex justify-between gap-x-4 py-3">
+    <RouterLink :to="{ name: 'server.queue', params: { id: server.id } }" class="flex justify-between gap-x-4 py-3">
         <dt class="text-gray-500">Queue</dt>
         <dd class="text-gray-700">
             <template v-if="request.isLoading()">
@@ -17,7 +17,7 @@
                 </template>
             </template>
         </dd>
-    </div>
+    </RouterLink>
 </template>
 
 <script setup lang="ts">

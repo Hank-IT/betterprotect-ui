@@ -1,12 +1,12 @@
-import { BaseRequest, JsonResponse, type PaginatableRequest, type ResponseContract } from '@hank-it/ui/service/requests'
+import { BaseRequest, JsonResponse, type PaginatableRequest } from '@hank-it/ui/service/requests'
 import type {PaginationResponseContract} from '@hank-it/ui/service/pagination'
 
-export interface PostfixLogResource {
+export interface RawLogResource {
     id: Number,
 }
 
-export class PostfixLogResponse extends JsonResponse implements PaginationResponseContract  {
-    public dataHandler(body): PostfixLogResource[] {
+export class RawLogResponse extends JsonResponse implements PaginationResponseContract  {
+    public dataHandler(body): RawLogResource[] {
         return body.data
     }
 
@@ -15,17 +15,17 @@ export class PostfixLogResponse extends JsonResponse implements PaginationRespon
     }
 }
 
-export class PostfixLogRequeest extends BaseRequest implements PaginatableRequest  {
+export class RawLogRequest extends BaseRequest implements PaginatableRequest  {
     method(): string {
         return 'GET'
     }
 
     url(): string {
-        return '/api/v1/postfix/log'
+        return '/api/v1/logging/raw'
     }
 
     public getResponse() {
-        return new PostfixLogResponse
+        return new RawLogResponse
     }
 
     public setPaginationParams(page: number, size: number): BaseRequest {

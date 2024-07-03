@@ -13,6 +13,8 @@ import MilterExceptionsPage from '@/pages/MilterExceptionsPage/MilterExceptionsP
 import UserManagementPage from '@/pages/UserManagementPage/UserManagementPage.vue'
 import LogPage from '@/pages/LogPage/LogPage.vue'
 import LogDetailPage from '@/pages/LogPage/LogDetailPage.vue'
+import RawLogPage from '@/pages/LogPage/components/RawLogPage.vue'
+import ServerQueuePage from '@/pages/ServerPage/pages/ServerQueuePage/ServerQueuePage.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,6 +48,12 @@ const router = createRouter({
                     component: ServerUpdatePage,
                     name: 'server.edit',
                     props: true
+                },
+                {
+                    path: ':id/queue',
+                    component: ServerQueuePage,
+                    name: 'server.queue',
+                    props: true,
                 }
             ]
         },
@@ -62,7 +70,11 @@ const router = createRouter({
                     path: ':id',
                     component: LogDetailPage,
                     name: 'logging.details',
-                    props: true
+                }, {
+                    path: 'raw',
+                    component: RawLogPage,
+                    name: 'logging.raw',
+                    props: route => ({ search: route.query.search })
                 },
             ]
         },

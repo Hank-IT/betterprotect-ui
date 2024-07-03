@@ -1,13 +1,12 @@
 import { BaseRequest, JsonResponse,  } from '@hank-it/ui/service/requests'
-import type {RecipientResource} from '@/api/requests/recipients/RecipientIndexRequest'
 
-export class PostfixLogDetailResponse extends JsonResponse  {
+export class AggregatedLogDetailsResponse extends JsonResponse  {
     public dataHandler(body) {
         return body.data
     }
 }
 
-export class PostfixLogDetailsRequest extends BaseRequest  {
+export class AggregatedLogDetailsRequest extends BaseRequest  {
 
     constructor(protected queueId: string) {
         super()
@@ -17,10 +16,10 @@ export class PostfixLogDetailsRequest extends BaseRequest  {
     }
 
     url(): string {
-        return `/api/v1/postfix/log/${this.queueId}`
+        return `/api/v1/logging/aggregated/${this.queueId}`
     }
 
     public getResponse() {
-        return new PostfixLogDetailResponse
+        return new AggregatedLogDetailsResponse
     }
 }

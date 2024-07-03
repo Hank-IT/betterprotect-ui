@@ -1,5 +1,5 @@
 <template>
-    <div v-if="postfixLogRequest.isLoading()" class="absolute w-full top-16 left-0">
+    <div v-if="aggregatedLogRequest.isLoading()" class="absolute w-full top-16 left-0">
         <ProgressLoader/>
     </div>
 
@@ -7,9 +7,11 @@
         <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
                 <h1 class="text-base font-semibold leading-6 text-gray-900">Logging</h1>
-                <!--
-                <p class="mt-2 text-sm text-gray-700">Rules are processed in the displayed order. First match determines the response.</p>
-                -->
+                <p class="mt-2 text-sm text-gray-700">This is the aggregated log.
+                    <RouterLink :to="{ name: 'logging.raw' }" class="text-primary-700 hover:text-primary-800">
+                        You may view the raw non-aggregated mail log here.
+                    </RouterLink>
+                </p>
             </div>
         </div>
 
@@ -66,7 +68,7 @@
                         <p class="text-sm text-yellow-700">
                             Your query yielded more than 10000 results.
                             {{ ' ' }}
-                            <span class="font-medium text-yellow-700">If you cannot find the what you seek decrease the date range or use a more specific search term.</span>
+                            <span class="font-medium text-yellow-700">If you cannot find what you seek, decrease the date range or use a more specific search term.</span>
                         </p>
                     </div>
                 </div>
@@ -107,7 +109,7 @@
                                 Sender
                             </th>
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                Receiver
+                                Recipients
                             </th>
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                 Status
@@ -134,17 +136,26 @@
                                 </div>
                             </td>
                             <td class="whitespace-nowrap px-3 py-4 text-sm">
-                                <div class="flex items-center">
+                                <div class="flex items-center space-x-4">
                                     <div>
-                                        <div class="font-medium text-gray-900 truncate">{{ mail.to }}</div>
-                                        <div v-if="mail.relay_hostname !== 'unknown'" class="mt-1 text-gray-500">{{ mail.relay_hostname }}</div>
-                                        <div v-else class="mt-1 text-gray-500">{{ mail.relay_ip }}</div>
+                                        <div class="font-medium text-gray-900 truncate">
+                                            {{ mail.recipients[0].to }}
+                                            <span class="text-gray-600" v-if="mail.recipients.length > 1">and {{ mail.recipients.length - 1 }} more</span>
+                                        </div>
+                                        <div v-if="mail.recipients[0].relay_hostname !== 'unknown'" class="mt-1 text-gray-500">{{ mail.recipients[0].relay_hostname }}</div>
+                                        <div v-else class="mt-1 text-gray-500">{{ mail.recipients[0].relay_ip }}</div>
                                     </div>
                                 </div>
                             </td>
                             <td class="whitespace-nowrap px-3 py-4 text-sm">
-                                <span :class="{ 'text-green-700': mail.status == 'sent', 'text-yellow-700': mail.status == 'deferred' }">{{ mail.status }}</span>
-                                <span :class="{ 'text-red-700': mail.action == 'reject' }">{{ mail.action }}</span>
+                                <template v-if="mail.recipients.length > 1">
+                                    <span class="text-gray-700 italic">Indeterminate</span>
+                                </template>
+                                <template v-else>
+                                    <span class="capitalize" :class="{ 'text-green-700': mail.recipients[0].status == 'sent', 'text-yellow-700': mail.recipients[0].status == 'deferred' }">{{ mail.recipients[0].status }}</span>
+                                    <span class="capitalize" :class="{ 'text-red-700': mail.action == 'reject' }">{{ mail.action }}</span>
+                                    <span class="capitalize" v-if="mail.recipients[0].status !== 'sent'" :class="{ 'text-red-700': mail.amavis_action == 'amavis_action' }">{{ mail.amavis_action }}</span>
+                                </template>
                             </td>
 
                             <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3 space-x-2">
@@ -170,23 +181,13 @@
         </div>
     </div>
 
-    <div v-if="Object.keys(paginator.getPageData()).length === 0 && initialLoading" class="text-center mt-8">
-        <h3 class="mt-2 text-sm font-semibold text-gray-900">No matches</h3>
-        <p class="mt-1 text-sm text-gray-500">
-            <template v-if="search === ''">
-                No matches found from {{ startDate }} to {{ endDate }}
-            </template>
-            <template v-else>
-                No matches found for {{ search }} from {{ startDate }} to {{ endDate }}
-            </template>
-        </p>
-    </div>
+    <NoMatchesFound v-if="Object.keys(paginator.getPageData()).length === 0 && initialLoading" :search="search" :start-date="startDate" :end-date="endDate" :key="search" />
 
     <SearchFieldsSlideover v-model="isSearchFieldsSlideoverOpen" v-model:selected-fields="selectedFields" />
  </template>
 
 <script setup lang="ts">
-import {PostfixLogRequeest} from '@/api/requests/logging/PostfixLogRequest'
+import {AggregatedLogRequest} from '@/api/requests/logging/AggregatedLogRequest'
 import {computed, onMounted, ref} from 'vue'
 import BPagination from '@/ui/BPagination.vue'
 import {Paginator, RequestDriver} from '@hank-it/ui/service/pagination'
@@ -199,6 +200,7 @@ import {debounce} from 'lodash'
 import { ExclamationTriangleIcon, XCircleIcon } from '@heroicons/vue/20/solid'
 import SearchFieldsSlideover from '@/pages/LogPage/components/SearchFieldsSlideover.vue'
 import {useIsOpen} from '@hank-it/ui/vue'
+import NoMatchesFound from '@/pages/LogPage/components/NoMatchesFound.vue'
 
 const {fromISOToLocalDateTimeString, fromISOToRelativeString} = useDateHandling()
 
@@ -230,7 +232,7 @@ const selectedFields = computed({
     set(value) {
         internalSelectedFields.value = value
 
-        postfixLogRequest.withParams({
+        aggregatedLogRequest.withParams({
             search_fields: value,
         })
     }
@@ -242,7 +244,7 @@ const {isOpen: isSearchFieldsSlideoverOpen} = useIsOpen(open => {
     }
 })
 
-const postfixLogRequest = new PostfixLogRequeest().withParams({
+const aggregatedLogRequest = new AggregatedLogRequest().withParams({
     start_date: internalStartDate.value,
     end_date: internalEndDate.value,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -261,7 +263,7 @@ const startDate = computed({
     set(value) {
         internalStartDate.value = value
 
-        postfixLogRequest.withParams({
+        aggregatedLogRequest.withParams({
             start_date: value,
         })
 
@@ -276,7 +278,7 @@ const endDate = computed({
     set(value) {
         internalEndDate.value = value
 
-        postfixLogRequest.withParams({
+        aggregatedLogRequest.withParams({
             end_date: value,
         })
 
@@ -291,7 +293,7 @@ const search = computed({
     set(value) {
         internalSearch.value = value
 
-        postfixLogRequest.withParams({
+        aggregatedLogRequest.withParams({
             search: value,
         })
 
@@ -313,7 +315,7 @@ const pageNumber = computed({
 
 const initialLoading = ref(false)
 
-const paginator = new Paginator(new RequestDriver(postfixLogRequest))
+const paginator = new Paginator(new RequestDriver(aggregatedLogRequest))
 
 // Make the paginator prepare the first page
 paginator.init(1, 10).then(dto => {

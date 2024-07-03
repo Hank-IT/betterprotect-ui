@@ -5,19 +5,20 @@
 </template>
 
 <script setup lang="ts">
-import {PostfixLogDetailsRequest} from '@/api/requests/logging/PostfixLogDetailRequest'
+import {AggregatedLogDetailsRequest} from '@/api/requests/logging/AggregatedLogDetailsRequest'
 import {ref} from 'vue'
+import {debounce} from 'lodash'
 
 const props = defineProps({
     id: String,
 })
 
-const logDetailRequest = new PostfixLogDetailsRequest(props.id)
+const aggregatedLogDetailsRequest = new AggregatedLogDetailsRequest(props.id)
 
 const details = ref()
 
 function load() {
-    logDetailRequest
+    aggregatedLogDetailsRequest
         .send()
         .then(response => {
             details.value = response.getData()
@@ -27,5 +28,10 @@ function load() {
         })
 }
 
-load()
+
+const loadDebounced = debounce(() => {
+    load(1)
+}, 250)
+
+loadDebounced()
 </script>
