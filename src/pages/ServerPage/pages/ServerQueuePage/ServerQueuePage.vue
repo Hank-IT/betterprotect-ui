@@ -13,13 +13,9 @@
 
                 <div class="sm:flex sm:items-center mt-6">
                     <div class="sm:flex-auto"></div>
-                    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                        <button
-                            v-if="auth.check(['editor', 'administrator'])"
-                            type="button"
-                            class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                            Flush queue
-                        </button>
+                    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none space-x-2">
+                        <RefreshQueueButton v-if="auth.check(['editor', 'administrator'])" :id="id" @success="load" />
+                        <FlushQueueButton v-if="auth.check(['editor', 'administrator'])" :id="id" @success="load" />
                     </div>
                 </div>
             </div>
@@ -86,7 +82,7 @@
                                     </td>
 
                                     <td class="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3 space-x-2">
-                                        Details
+                                        <MailDetailsButton :payload="mail" />
                                         <DeleteMailButton :server-id="id" :queue-id="mail.queue_id" @success="load" />
                                     </td>
                                 </tr>
@@ -118,6 +114,9 @@ import {Paginator, RequestDriver} from '@hank-it/ui/service/pagination'
 import {useAuthStore} from '@/stores/auth'
 import useDateHandling from '@/composables/useDateHandling'
 import DeleteMailButton from '@/pages/ServerPage/pages/ServerQueuePage/components/DeleteMailButton.vue'
+import FlushQueueButton from '@/pages/ServerPage/pages/ServerQueuePage/components/FlushQueueButton.vue'
+import RefreshQueueButton from '@/pages/ServerPage/pages/ServerQueuePage/components/RefreshQueueButton.vue'
+import MailDetailsButton from '@/pages/ServerPage/pages/ServerQueuePage/components/MailDetailsButton.vue'
 
 const props = defineProps({
     id: {

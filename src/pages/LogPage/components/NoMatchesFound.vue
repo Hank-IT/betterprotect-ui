@@ -7,11 +7,11 @@
                         <p>
                             <template v-if="data.meta?.relation === 'gte'">
                                 We found more than {{ data.meta.total }} matches for your query in the raw index. The result you are looking for might be unparsable.
-                                <RouterLink :to="{ name: 'logging.raw', query: { search: search } }">You may view the raw non-aggregated mail log here.</RouterLink>
+                                <RouterLink :to="{ name: 'logging.raw', query: { search: search, start_date: startDate, end_date: endDate } }">You may view the raw non-aggregated mail log here.</RouterLink>
                             </template>
                             <template v-else>
                                 We found {{ data.meta?.total }} matches for your query in the raw index. The result you are looking for might be unparsable.
-                                <RouterLink :to="{ name: 'logging.raw', query: { search: search } }">You may view the raw non-aggregated mail log here.</RouterLink>
+                                <RouterLink :to="{ name: 'logging.raw', query: { search: search, start_date: startDate, end_date: endDate } }">You may view the raw non-aggregated mail log here.</RouterLink>
                             </template>
                         </p>
                     </div>

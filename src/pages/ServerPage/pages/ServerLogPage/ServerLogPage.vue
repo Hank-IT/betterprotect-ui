@@ -1,13 +1,14 @@
 <template>
     <div>
-        <div v-if="rawLogRequest.isLoading()" class="absolute w-full top-16 left-0">
+        <div v-if="serverSyslogRequest.isLoading()" class="absolute w-full top-16 left-0">
             <ProgressLoader/>
         </div>
 
         <div>
             <div class="sm:flex sm:items-center">
                 <div class="sm:flex-auto">
-                    <h1 class="text-base font-semibold leading-6 text-gray-900">Raw logging</h1>
+                    <h1 class="text-base font-semibold leading-6 text-gray-900">Server log</h1>
+                    <p class="mt-2 text-sm text-gray-700">This is the legacy syslog. Use the modern log viewer for a better experience.</p>
                 </div>
             </div>
 
@@ -50,23 +51,6 @@
                 </div>
             </div>
 
-            <div v-if="maxDocumentsWarning" class="mt-6">
-                <div class="border-l-4 border-yellow-400 bg-yellow-50 p-4">
-                    <div class="flex">
-                        <div class="flex-shrink-0">
-                            <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
-                        </div>
-                        <div class="ml-3">
-                            <p class="text-sm text-yellow-700">
-                                Your query yielded more than 10000 results.
-                                {{ ' ' }}
-                                <span class="font-medium text-yellow-700">If you cannot find what you seek, decrease the date range or use a more specific search term.</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div v-if="errors" class="mt-6">
                 <div class="rounded-md bg-red-50 p-4">
                     <div class="flex">
@@ -95,16 +79,20 @@
                             <tr>
                                 <th scope="col"
                                     class="min-w-[12rem] py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 relative px-3 sm:w-12">
+                                    Received
+                                </th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                     Message
                                 </th>
                             </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
-                            <tr v-for="mail in paginator.getPageData()" :key="mail.timestamp">
+                            <tr v-for="mail in paginator.getPageData()">
                                 <td class=" py-4 pr-3 text-sm font-medium relative px-3 sm:w-12">
-                                    <div class="flex items-center">
-                                        {{ mail.message }}
-                                    </div>
+                                    {{ mail.received_at }}
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                    {{ mail.message }}
                                 </td>
                             </tr>
                             </tbody>
@@ -137,9 +125,8 @@
 </template>
 
 <script setup lang="ts">
-import {RawLogRequest} from '@/api/requests/logging/RawLogRequest'
 import {computed, onMounted, ref} from 'vue'
-import {ExclamationTriangleIcon, XCircleIcon} from '@heroicons/vue/20/solid'
+import {XCircleIcon} from '@heroicons/vue/20/solid'
 import BPagination from '@/ui/BPagination.vue'
 import {Paginator, RequestDriver} from '@hank-it/ui/service/pagination'
 import ProgressLoader from '@/ui/ProgressLoader.vue'
@@ -147,36 +134,27 @@ import {DateRangePicker} from 'flowbite-datepicker';
 import {DateTime} from 'luxon'
 import {debounce} from 'lodash'
 import {useRouter} from 'vue-router'
+import {ServerSyslogRequest} from '@/api/requests/servers/ServerSyslogRequest'
 
 const props = defineProps({
-    search: String,
-    end_date: {
-        type: String,
-        default:DateTime.now().toFormat('yyyy-MM-dd')
-    },
-    start_date: {
-        type: String,
-        default: DateTime.now().minus({ days: 2 }).toFormat('yyyy-MM-dd')
+    id: {
+        required: true,
     }
 })
-
-console.log(props.search)
 
 const router = useRouter()
 
 const initialLoading = ref(false)
-const maxDocumentsWarning = ref(false)
 const dateRangePicker = ref(null)
-const internalStartDate = ref(props.start_date)
-const internalEndDate = ref(props.end_date)
-const internalSearch = ref(props.search)
+const internalStartDate = ref(DateTime.now().minus({ days: 2 }).toFormat('yyyy-MM-dd'))
+const internalEndDate = ref(DateTime.now().toFormat('yyyy-MM-dd'))
+const internalSearch = ref(null)
 const errors = ref(null)
 const searchRef = ref(null)
 
-const rawLogRequest = new RawLogRequest().withParams({
+const serverSyslogRequest = new ServerSyslogRequest(props.id).withParams({
     start_date: internalStartDate.value,
     end_date: internalEndDate.value,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     search: internalSearch.value,
 })
 
@@ -192,7 +170,7 @@ const startDate = computed({
     set(value) {
         internalStartDate.value = value
 
-        rawLogRequest.withParams({
+        serverSyslogRequest.withParams({
             start_date: value,
         })
 
@@ -207,7 +185,7 @@ const endDate = computed({
     set(value) {
         internalEndDate.value = value
 
-        rawLogRequest.withParams({
+        serverSyslogRequest.withParams({
             end_date: value,
         })
 
@@ -222,7 +200,7 @@ const search = computed({
     set(value) {
         internalSearch.value = value
 
-        rawLogRequest.withParams({
+        serverSyslogRequest.withParams({
             search: value,
         })
 
@@ -242,13 +220,11 @@ const pageNumber = computed({
     }
 })
 
-const paginator = new Paginator(new RequestDriver(rawLogRequest))
+const paginator = new Paginator(new RequestDriver(serverSyslogRequest))
 
 // Make the paginator prepare the first page
 paginator.init(1, 10).then(dto => {
     initialLoading.value = true
-
-    maxDocumentsWarning.value = dto.getResponse().getBody().meta.relation !== 'eq'
 }).catch(errorHandler)
 
 function load(page: Number = undefined) {
@@ -256,9 +232,7 @@ function load(page: Number = undefined) {
 
     errors.value = null
 
-    promise.then(dto => {
-        maxDocumentsWarning.value = dto.getResponse().getBody().meta.relation !== 'eq'
-    }).catch(errorHandler)
+    promise.catch(errorHandler)
 }
 
 const loadDebounced = debounce(() => {
@@ -275,6 +249,8 @@ onMounted(() => {
 })
 
 function errorHandler(exception) {
+    console.log(exception)
+
     exception.getError().getBodyPromise().then(response => {
         errors.value = response
     })

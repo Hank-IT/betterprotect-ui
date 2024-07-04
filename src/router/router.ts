@@ -15,6 +15,7 @@ import LogPage from '@/pages/LogPage/LogPage.vue'
 import LogDetailPage from '@/pages/LogPage/LogDetailPage.vue'
 import RawLogPage from '@/pages/LogPage/components/RawLogPage.vue'
 import ServerQueuePage from '@/pages/ServerPage/pages/ServerQueuePage/ServerQueuePage.vue'
+import ServerLogPage from '@/pages/ServerPage/pages/ServerLogPage/ServerLogPage.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -54,6 +55,12 @@ const router = createRouter({
                     component: ServerQueuePage,
                     name: 'server.queue',
                     props: true,
+                },
+                {
+                    path: ':id/log',
+                    component: ServerLogPage,
+                    name: 'server.log',
+                    props: true,
                 }
             ]
         },
@@ -70,11 +77,12 @@ const router = createRouter({
                     path: ':id',
                     component: LogDetailPage,
                     name: 'logging.details',
+                    props: true,
                 }, {
                     path: 'raw',
                     component: RawLogPage,
                     name: 'logging.raw',
-                    props: route => ({ search: route.query.search })
+                    props: route => ({ search: route.query.search, start_date: route.query.start_date, end_date: route.query.end_date })
                 },
             ]
         },
