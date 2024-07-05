@@ -12,7 +12,7 @@ RUN npm ci
 
 COPY ./ /app/
 
-RUN npm run build
+RUN npm run build-only
 
 #
 # Runner stage, runs the application in nginx
