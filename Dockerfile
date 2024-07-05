@@ -5,6 +5,7 @@ ENV HANK_IT_NPM_REGISTRY_AUTH_TOKEN=$HANK_IT_NPM_REGISTRY_AUTH_TOKEN
 RUN apk add zip
 
 WORKDIR /app
+COPY .npmrc /app/
 COPY package*.json /app/
 
 RUN npm ci
