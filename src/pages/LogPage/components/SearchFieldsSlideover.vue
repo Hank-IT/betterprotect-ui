@@ -110,8 +110,13 @@ const fields = [
         description: 'The to address of the email.'
     },
     {
+        field: 'Status',
+        value: 'postfix_status',
+        description: 'The status a deliver attempt: Sent, Reject, Bounced, Deferred, Blocked'
+    },
+    {
         field: 'Headers',
-        value: 'postfix_headers.value',
+        value: 'postfix_headers',
         description: 'The headers of the email as logged by postfix.'
     },
 ]

@@ -149,7 +149,9 @@ const loadNextDebounced = debounce(event => {
 
 function scroll(event) {
     if (isAtBottom(event.target.scrollHeight, event.target.scrollTop, event.target.clientHeight)) {
-        loadNextDebounced()
+        if (paginator.getLastPage() > paginator.getCurrentPage()) {
+            loadNextDebounced()
+        }
     }
 }
 
@@ -161,12 +163,14 @@ useListenForEventsOnBus(
                 new TaskFailedEvent,
                 new TaskFinishedEvent,
                 new TaskProgressEvent,
-                new TaskStartedEvent()
+                new TaskStartedEvent,
             ],
             (event: EventBusEventContract, payload?: any) => {
-                paginator.refresh(1, {
-                    replace: true
-                })
+                if (paginator.isInitialized()) {
+                    paginator.refresh(1, {
+                        replace: true,
+                    })
+                }
             }
         )
     ],

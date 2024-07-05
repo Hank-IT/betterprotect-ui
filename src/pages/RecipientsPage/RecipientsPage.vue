@@ -77,6 +77,8 @@
 
                     <BPagination
                         v-model="pageNumber"
+                        v-model:page-size="pageSize"
+                        @refresh="loadRecipients"
                         :page-count="paginator.getLastPage()"
                         :from-count="paginator.getFromItemNumber()"
                         :to-count="paginator.getToItemNumber()"
@@ -155,6 +157,15 @@ const pageNumber = computed({
     }
 })
 
+const pageSize = computed({
+    set(value) {
+        paginator.setPageSize(value)
+    },
+    get() {
+        return paginator.getPageSize()
+    }
+})
+
 const {isOpen: createRecipientSlideoverOpen, isOpenKey: createRecipientSlideoverKey} = useIsOpen()
 const {isOpen: recipientLdapQuerySlideoverOpen, isOpenKey: recipientLdapQuerySlideoverKey} = useIsOpen()
 
@@ -166,7 +177,7 @@ const searchRef = ref(null)
 const paginator = new Paginator(new RequestDriver(recipientIndexRequest))
 
 // Make the paginator prepare the first page
-paginator.init(1, 10).then(() => {
+paginator.init(1, pageSize.value).then(() => {
     initialLoading.value = true
 })
 

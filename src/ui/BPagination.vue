@@ -19,7 +19,7 @@
             </button>
         </div>
         <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-            <div>
+            <div class="flex items-center justify-between space-x-4">
                 <p class="text-sm text-gray-700">
                     Showing
                     {{ ' ' }}
@@ -35,7 +35,24 @@
                     {{ ' ' }}
                     items
                 </p>
+
+                <button @click="emits('refresh')" type="button" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                    <ArrowPathIcon
+                        class="h-5 w-5"
+                        aria-hidden="true"
+                    />
+                </button>
             </div>
+
+            <div>
+                <select v-model="pageSize" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-primary-600 sm:text-sm sm:leading-6">
+                    <option :value="10">10</option>
+                    <option :value="25">25</option>
+                    <option :value="50">50</option>
+                    <option :value="100">100</option>
+                </select>
+            </div>
+
             <div v-if="pageCount > 1">
                 <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
                     <button
@@ -106,7 +123,7 @@
 </template>
 
 <script setup lang="ts">
-import {ChevronLeftIcon, ChevronRightIcon} from '@heroicons/vue/20/solid'
+import {ChevronLeftIcon, ChevronRightIcon, ArrowPathIcon } from '@heroicons/vue/20/solid'
 import {useModelWrapper} from '@hank-it/ui/vue'
 import {getDisplayablePages} from '@hank-it/ui/service/pagination'
 import {ref, watch} from 'vue'
@@ -115,13 +132,16 @@ const props = defineProps({
     modelValue: {
         default: undefined,
     },
+    pageSize: {
+        default: 10
+    },
     pageCount: Number,
     fromCount: Number,
     toCount: Number,
     totalCount: Number
 })
 
-const emits = defineEmits(['update:modelValue'])
+const emits = defineEmits(['update:modelValue', 'update:pageSize', 'refresh'])
 
 const pages = ref([])
 
@@ -129,6 +149,10 @@ const pageNumber = useModelWrapper(props, emits, {
     callback: value => {
         pages.value = getDisplayablePages(props.pageCount, value, 6)
     }
+})
+
+const pageSize = useModelWrapper(props, emits, {
+    name: 'pageSize'
 })
 
 watch(

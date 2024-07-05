@@ -60,12 +60,6 @@
                                                     >Log Viewer</a>
                                                 </RouterLink>
                                             </li>
-                                            <li>
-                                                <a href="#"
-                                                   :class="[false ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
-                                                    Charts
-                                                </a>
-                                            </li>
                                         </ul>
                                     </li>
                                     <li>
@@ -210,12 +204,6 @@
                                         @click="navigate"
                                     >Log Viewer</a>
                                 </RouterLink>
-                            </li>
-                            <li>
-                                <a href="#"
-                                   :class="[false ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600', 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6']">
-                                    Charts
-                                </a>
                             </li>
                         </ul>
                     </li>

@@ -77,6 +77,8 @@
 
                     <BPagination
                             v-model="pageNumber"
+                            v-model:page-size="pageSize"
+                            @refresh="loadUsers"
                             :page-count="paginator.getLastPage()"
                             :from-count="paginator.getFromItemNumber()"
                             :to-count="paginator.getToItemNumber()"
@@ -145,6 +147,15 @@ const pageNumber = computed({
     },
     get() {
         return paginator.getCurrentPage()
+    }
+})
+
+const pageSize = computed({
+    set(value) {
+        paginator.setPageSize(value)
+    },
+    get() {
+        return paginator.getPageSize()
     }
 })
 

@@ -91,7 +91,7 @@
                                 <td class=" py-4 pr-3 text-sm font-medium relative px-3 sm:w-12">
                                     {{ mail.received_at }}
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                <td class="px-3 py-4 text-sm">
                                     {{ mail.message }}
                                 </td>
                             </tr>
@@ -103,6 +103,8 @@
 
             <BPagination
                 v-model="pageNumber"
+                v-model:page-size="pageSize"
+                @refresh="load"
                 :page-count="paginator.getLastPage()"
                 :from-count="paginator.getFromItemNumber()"
                 :to-count="paginator.getToItemNumber()"
@@ -217,6 +219,15 @@ const pageNumber = computed({
     },
     get() {
         return paginator.getCurrentPage()
+    }
+})
+
+const pageSize = computed({
+    set(value) {
+        paginator.setPageSize(value)
+    },
+    get() {
+        return paginator.getPageSize()
     }
 })
 

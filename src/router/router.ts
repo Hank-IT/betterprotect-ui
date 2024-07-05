@@ -31,6 +31,10 @@ const router = createRouter({
             component: UserManagementPage
         },
         {
+            path: '/',
+            redirect: '/server'
+        },
+        {
             path: '/server',
             component: ParentRouterView,
             children: [

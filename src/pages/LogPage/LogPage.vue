@@ -172,6 +172,8 @@
 
                 <BPagination
                     v-model="pageNumber"
+                    v-model:page-size="pageSize"
+                    @refresh="load"
                     :page-count="paginator.getLastPage()"
                     :from-count="paginator.getFromItemNumber()"
                     :to-count="paginator.getToItemNumber()"
@@ -222,7 +224,7 @@ const internalSelectedFields = ref([
     'postfix_relay_hostname',
     'postfix_from',
     'postfix_to',
-    'postfix_to',
+    'postfix_status',
 ])
 
 const selectedFields = computed({
@@ -310,6 +312,15 @@ const pageNumber = computed({
     },
     get() {
         return paginator.getCurrentPage()
+    }
+})
+
+const pageSize = computed({
+    set(value) {
+        paginator.setPageSize(value)
+    },
+    get() {
+        return paginator.getPageSize()
     }
 })
 
