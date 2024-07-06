@@ -9,7 +9,7 @@
                 <template v-if="count === 1">
                     1 item
                 </template>
-                <template v-else-if="count > 0">
+                <template v-else-if="count > 1">
                     {{ count }} items
                 </template>
                 <template v-else>
