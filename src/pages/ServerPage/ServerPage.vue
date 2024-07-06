@@ -18,14 +18,14 @@
             </div>
         </div>
 
-        <div class="mt-5 space-y-5">
+        <ul class="mt-5 space-y-5">
             <ServerItem
                 v-for="server in servers"
                 :key="server.id"
                 :server="server"
                 @server-deleted="loadServers"
             />
-        </div>
+        </ul>
     </div>
 </template>
 
