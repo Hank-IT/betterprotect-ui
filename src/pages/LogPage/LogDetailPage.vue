@@ -203,8 +203,8 @@
                 </div>
             </div>
 
-            <div v-if="details.action !== 'reject' && details.amavis_action !== 'Blocked'">
-                <Disclosure v-slot="{ open }" default-open>
+            <div>
+                <Disclosure v-if="details.recipients.length > 0" v-slot="{ open }" default-open>
                     <DisclosureButton
                         class="flex w-full justify-between rounded-lg bg-primary-100 px-4 py-2 text-left text-sm font-medium text-primary-900 hover:bg-primary-200 focus:outline-none focus-visible:ring focus-visible:ring-primary-500/75"
                     >
