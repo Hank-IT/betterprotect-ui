@@ -6,7 +6,7 @@
 
         <template #default>
             <ul role="list" class="divide-y divide-gray-100" @scroll="scroll">
-                <li v-for="task in paginator.getPageData()" :key="task.id" class="relative py-5 hover:bg-gray-50">
+                <li @click="payload = task" v-for="task in paginator.getPageData()" :key="task.id" class="relative py-5 hover:bg-gray-50">
                     <div class="px-4 sm:px-6 lg:px-8">
                         <div class="mx-auto flex max-w-4xl justify-between gap-x-6">
                             <div class="flex min-w-0 gap-x-4">
@@ -81,11 +81,13 @@
                             </div>
                         </div>
                         <p v-if="task.progress.length > 0" class="mt-1 flex text-xs leading-5 text-gray-500">
-                            <span class="relative" :class="{ 'text-red-700': task.status == 2, 'text-green-700': task.status == 3 }">{{ task.progress[task.progress.length - 1].description }}</span>
+                            <span class="relative" :class="{ 'text-red-700': task.status == 2, 'text-green-700': task.status == 3 }">{{ task.progress[0].description }}</span>
                         </p>
                     </div>
                 </li>
             </ul>
+
+            <DetailsModal v-model="isDetailsModalOpen" :payload="payload" :key="detailsModalKey" />
         </template>
 
         <template #footer>
@@ -101,7 +103,7 @@
 
 <script setup lang="ts">
 import BSlideover from '@/ui/BSlideover.vue'
-import { useModelWrapper, useOnBoolean } from '@hank-it/ui/vue'
+import { useModelWrapper, useOnBoolean, useIsOpenFromVar } from '@hank-it/ui/vue'
 import { TaskIndexRequest } from '@/api/requests/tasks/TaskIndexRequest'
 import useDateHandling from '@/composables/useDateHandling'
 import useListenForEventsOnBus from '@/domain/eventBus/composables/useListenForEventsOnBus'
@@ -116,6 +118,7 @@ import TaskStartedEvent from '@/domain/eventBus/events/TaskStartedEvent'
 import { InfiniteScroller, RequestDriver } from '@hank-it/ui/service/pagination'
 import { isAtBottom } from '@hank-it/ui/helpers'
 import { debounce } from 'lodash'
+import DetailsModal from '@/components/TaskSlideover/DetailsModal.vue'
 
 const props = defineProps({
     modelValue: Boolean
@@ -132,6 +135,8 @@ const taskIndexRequest = new TaskIndexRequest()
 const paginator = new InfiniteScroller(new RequestDriver(taskIndexRequest))
 
 const { onBoolean } = useOnBoolean(props)
+
+const {fromVar: payload, isOpenFromVar: isDetailsModalOpen, isOpenFromVarKey: detailsModalKey} = useIsOpenFromVar()
 
 onBoolean({
         truthy: () => {
