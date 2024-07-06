@@ -81,7 +81,7 @@
                             </div>
                         </div>
                         <p v-if="task.progress.length > 0" class="mt-1 flex text-xs leading-5 text-gray-500">
-                            <span class="relative" :class="{ 'text-red-700': task.status == 2, 'text-green-700': task.status == 3 }">{{ task.progress[0].description }}</span>
+                            <span class="relative" :class="{ 'text-red-700': task.status == 2, 'text-green-700': task.status == 3 }">{{ task.progress[task.progress.length - 1].description }}</span>
                         </p>
                     </div>
                 </li>
