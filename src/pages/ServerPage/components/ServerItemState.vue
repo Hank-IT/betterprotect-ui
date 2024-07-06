@@ -12,7 +12,7 @@
                     <div class="text-sm font-medium text-red-800">{{ alertCount }} {{ alertCount === 1 ? 'alert' : 'alerts' }}</div>
                 </div>
             </div>
-            <div v-else-if="alertCount === 0">
+            <div v-else-if="alertCount === 0" class="flex">
                 <div class="flex-shrink-0">
                     <CheckCircleIcon class="h-5 w-5 text-green-400" aria-hidden="true" />
                 </div>
